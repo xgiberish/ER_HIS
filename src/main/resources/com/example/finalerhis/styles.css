@@ -1,0 +1,113 @@
+.button-default {
+  -fx-align-items: center;
+  -fx-background-color: #5790A6;
+  -fx-border: 0;
+  -fx-border-radius: 100px;
+  -fx-box-sizing: border-box;
+  -fx-color: #c6c6c6;
+  -fx-cursor: pointer;
+  -fx-display: inline-flex;
+  -fx-font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  -fx-font-size: 16px;
+  -fx-font-weight: 600;
+  -fx-justify-content: center;
+  -fx-line-height: 20px;
+  -fx-max-width: 480px;
+  -fx-min-height: 40px;
+  -fx-min-width: 0px;
+  -fx-overflow: hidden;
+  -fx-padding: 0px;
+  -fx-padding-left: 20px;
+  -fx-padding-right: 20px;
+  -fx-text-align: center;
+  -fx-touch-action: manipulation;
+  -fx-transition: -fx-background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  -fx-user-select: none;
+  -fx-vertical-align: middle;
+}
+
+.button-default:hover,
+.button-default:focus { 
+  -fx-background-color: #16437E;
+  color: #ffffff;
+}
+
+.button-default:active {
+  -fx-background: #09223b;
+  -fx-color: rgb(255, 255, 255, .7);
+}
+
+.button-default:disabled { 
+  -fx-cursor: not-allowed;
+  -fx-background: rgba(0, 0, 0, .08);
+  -fx-color: rgba(0, 0, 0, .3);
+}
+
+
+/* ICU ROOMS */
+.button-ICU {
+  -fx-background-color: #FF4742;
+  -fx-border: 1px solid #FF4742;
+  -fx-border-radius: 6px;
+  -fx-box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+  -fx-box-sizing: border-box;
+  -fx-color: #FFFFFF;
+  -fx-cursor: pointer;
+  -fx-display: inline-block;
+  -fx-font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
+  -fx-font-size: 16px;
+  -fx-font-weight: 800;
+  -fx-line-height: 16px;
+  -fx-min-height: 40px;
+  -fx-outline: 0;
+  -fx-padding: 12px 14px;
+  -fx-text-align: center;
+  -fx-text-rendering: geometricprecision;
+  -fx-text-transform: none;
+  -fx-user-select: none;
+  -webkit-user-select: none;
+  -fx-vertical-align: middle;
+}
+
+.button-ICU:hover,
+.button-ICU:active {
+  -fx-background-color: #800020;
+  -fx-background-position: 0 0;
+  -fx-color: #FF4742;
+}
+
+.button-ICU:active {
+  -fx-opacity: .5;
+}
+
+
+/* REGULAR ROOMS */
+.button-regular{
+  -fx-background-color: #5CB85C;
+  -fx-border-radius: 12px;
+  -fx-color: #000;
+  -fx-cursor: pointer;
+  -fx-font-weight: bold;
+  -fx-padding: 10px 15px;
+  -fx-text-align: center;
+  -fx-transition: 200ms;
+  -fx-width: 100%;
+  -fx-box-sizing: border-box;
+  -fx-border: 0;
+  -fx-font-size: 16px;
+  -fx-user-select: none;
+  -fx-touch-action: manipulation;
+}
+
+.button-regular:not(:disabled):hover,
+.button-regular:not(:disabled):focus {
+ -fx-outline: 0;
+  -fx-background: #f4e603;
+  -fx-box-shadow: 0 0 0 2px rgba(0,0,0,.2), 0 3px 8px 0 rgba(0,0,0,.15);
+}
+
+.button-regular:disabled {
+  filter: saturate(0.2) opacity(0.5);
+  -webkit-filter: saturate(0.2) opacity(0.5);
+  cursor: not-allowed;
+}
