@@ -30,13 +30,13 @@ public class AddMedication {
         try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
              Statement statement = connection.createStatement()) {
 
-            String sqlQuery = "SELECT id, content FROM medication_list";
+            String sqlQuery = "SELECT id, medication FROM medication_list";
             ResultSet resultSet = statement.executeQuery(sqlQuery);
 
             List<String> medicationList = new ArrayList<>();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                String content = resultSet.getString("content");
+                String content = resultSet.getString("medication");
                 medicationList.add(id + ": " + content);
             }
 
