@@ -5,10 +5,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AddMedication {
     @FXML
@@ -21,6 +23,7 @@ public class AddMedication {
     private String jdbcUrl = "jdbc:mysql://localhost:3306/hospital_users";
     private String username = "root";
     private String password = "";
+    private List<String> allMedications; // Store all medications fetched from the database
 
     public AddMedication() {
     }
@@ -33,14 +36,14 @@ public class AddMedication {
             String sqlQuery = "SELECT id, medication FROM medication_list";
             ResultSet resultSet = statement.executeQuery(sqlQuery);
 
-            List<String> medicationList = new ArrayList<>();
+            allMedications = new ArrayList<>();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String content = resultSet.getString("medication");
-                medicationList.add(id + ": " + content);
+                allMedications.add(id + ": " + content);
             }
 
-            medicationListView.setItems(FXCollections.observableArrayList(medicationList));
+            medicationListView.setItems(FXCollections.observableArrayList(allMedications));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -53,5 +56,14 @@ public class AddMedication {
             medicationListView.getItems().add(medicationName);
             nameTextField.clear();
         }
+    }
+
+    @FXML
+    private void handleSearchMedication(KeyEvent event) {
+        String searchQuery = nameTextField.getText().trim();
+        List<String> filteredMedications = allMedications.stream()
+                .filter(medication -> medication.toLowerCase().contains(searchQuery.toLowerCase()))
+                .collect(Collectors.toList());
+        medicationListView.setItems(FXCollections.observableArrayList(filteredMedications));
     }
 }
