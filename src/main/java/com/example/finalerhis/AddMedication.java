@@ -71,8 +71,32 @@ public class AddMedication {
         if (!medicationName.isEmpty()) {
             medicationListView.getItems().add(medicationName);
             nameTextField.clear();
+
+            String selectedMedication = medicationListView.getSelectionModel().getSelectedItem();
+            if (selectedMedication != null) {
+                String patientIdValue = patientID.getText().trim();
+
+                try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+                     PreparedStatement statement = connection.prepareStatement(
+                             "UPDATE patient_information SET treatment = ? WHERE id = ?")) {
+
+                    statement.setString(1, selectedMedication);
+                    statement.setString(2, patientIdValue);
+
+                    int rowsAffected = statement.executeUpdate();
+                    if (rowsAffected > 0) {
+                        System.out.println("Medication added successfully!");
+                    } else {
+                        System.out.println("Failed to add medication!");
+                    }
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
+
 
     @FXML
     private void handleSearchMedication(KeyEvent event) {
