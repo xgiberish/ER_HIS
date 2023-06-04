@@ -59,7 +59,7 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <VBox layoutX="-3.0" prefHeight="800.0" prefWidth="273.0" style="-fx-background-color: #154360;">
+        <VBox layoutX="-3.0" prefHeight="800.0" prefWidth="278.0" style="-fx-background-color: #154360;">
             <children>
                 <Pane prefHeight="83.0" prefWidth="201.0">
                     <children>
@@ -139,11 +139,9 @@
                                 <VBox spacing="10">
                                     <TableView>
                                         <columns>
-                                            <TableColumn text="Name" />
-                                            <TableColumn text="Age" />
-                                            <TableColumn text="ID" />
-                                            <TableColumn text="Condition" />
-                                            <TableColumn text="Diagnosis" />
+                                            <TableColumn prefWidth="60.0" text="ID" />
+                                            <TableColumn prefWidth="112.0" text="Name" />
+                                 <TableColumn prefWidth="75.0" text="Triage" />
                                         </columns>
                                         <!-- Add patient data to the table -->
                                     </TableView>
@@ -158,11 +156,9 @@
                                 <VBox prefHeight="264.0" prefWidth="245.0" spacing="10">
                                     <TableView prefHeight="254.0" prefWidth="208.0">
                                         <columns>
-                                            <TableColumn prefWidth="67.0" text="Name" />
-                                            <TableColumn prefWidth="53.0" text="ID" />
-                                            <TableColumn prefWidth="120.0" text="Condition" />
-                                            <TableColumn text="Triage Level" />
-                                            <TableColumn text="Waiting Time" />
+                                            <TableColumn prefWidth="94.0" text="Name" />
+                                            <TableColumn prefWidth="76.0" text="Wait" />
+                                            <TableColumn text="Triage" />
                                         </columns>
                                         <!-- Add waiting room data to the table -->
                                     </TableView>

@@ -15,10 +15,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 public class PatientInformation {
+    public TextField timeTextField;
     @FXML
     private Button waitingRoomButton;
     @FXML
@@ -67,6 +71,9 @@ public class PatientInformation {
         waitingRoomButton.setDisable(true);
         admitButton.setDisable(true);
         dischargeButton.setDisable(true);
+
+        String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+        timeTextField.setText(currentTime);
 
         // Add items to the triageComboBox
        // triageComboBox.getItems().addAll("white", "blue", "green", "orange", "red");
@@ -127,7 +134,7 @@ public class PatientInformation {
                 String age = resultSet.getString("age");
                 String gender = resultSet.getString("gender");
                 String allergies = resultSet.getString("allergies");
-                String admissionDate = resultSet.getString("admission_date");
+                String admission_date = resultSet.getString("admission_date");
                 String triage = resultSet.getString("triage");
                 String treatment = resultSet.getString("treatment");
 
@@ -137,7 +144,7 @@ public class PatientInformation {
                 ageField.setText(age);
                 genderField.setText(gender);
                 allergiesField.setText(allergies);
-                admissionDateField.setText(admissionDate);
+                admissionDateField.setText(admission_date);
                 triageComboBox.setValue(triage);
                 treatmentField.setText(treatment);
 
@@ -174,9 +181,9 @@ public class PatientInformation {
                     ageField.setEditable(true);
                     genderField.setEditable(true);
                     allergiesField.setEditable(true);
-                    admissionDateField.setEditable(true);
                     triageComboBox.setEditable(true);
                     treatmentField.setEditable(true);
+                    admissionDateField.setEditable(true);
                     admitButton.setDisable(false);
                     dischargeButton.setDisable(false);
                     addMedication.setDisable(false);
@@ -213,6 +220,46 @@ public class PatientInformation {
     }
 
     @FXML
+    private void insertPatientData(String id, String name, String diagnosis, String age, String gender, String allergies, String triage, String treatment, String time, LocalDate admission_date) {
+        String url = "jdbc:mysql://localhost:3306/hospital_users";
+        String username = "root";
+        String password = "";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "INSERT INTO patient_information (id, full_name, age, gender, allergies, time, triage, diagnosis, treatment, admission_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, id);
+            statement.setString(2, name);
+            statement.setString(3, age);
+            statement.setString(4, gender);
+            statement.setString(5, allergies);
+            statement.setString(6, time);
+            statement.setString(7, triage);
+            statement.setString(8, diagnosis);
+            statement.setString(9, treatment);
+            statement.setDate(10, Date.valueOf(admission_date));
+
+            int rowsAffected = statement.executeUpdate();
+
+            Alert alert;
+            if (rowsAffected > 0) {
+                alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Patient admitted successfully.");
+            } else {
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Failed to admit patient.");
+            }
+            alert.showAndWait();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void onAdmitButtonClicked() {
         if (!isNewPatient) {
             Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
@@ -232,6 +279,7 @@ public class PatientInformation {
                 diagnosisField.setEditable(true);
                 ageField.setEditable(true);
                 genderField.setEditable(true);
+                admissionDateField.setEditable(true);
                 allergiesField.setEditable(true);
                 dischargeButton.setDisable(false);
             } else {
@@ -247,37 +295,10 @@ public class PatientInformation {
         String allergies = allergiesField.getText();
         String triage = triageComboBox.getValue();
         String treatment = treatmentField.getText();
+        String time = timeTextField.getText();
+        LocalDate admission_date = LocalDate.now();
 
-        insertPatientData(id, name, diagnosis, age, gender, allergies, triage, treatment);
-    }
-
-    private void insertPatientData(String id, String name, String diagnosis, String age, String gender, String allergies, String triage, String treatment) {
-        String url = "jdbc:mysql://localhost:3306/hospital_users";
-        String username = "root";
-        String password = "";
-
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "INSERT INTO patient_information (id, full_name, diagnosis, age, gender, allergies, triage, treatment) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, id);
-            statement.setString(2, name);
-            statement.setString(3, diagnosis);
-            statement.setString(4, age);
-            statement.setString(5, gender);
-            statement.setString(6, allergies);
-            statement.setString(7, triage);
-            statement.setString(8, treatment);
-
-            int rowsAffected = statement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Patient data inserted successfully.");
-            } else {
-                System.out.println("Failed to insert patient data.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        insertPatientData(id, name, diagnosis, age, gender, allergies, triage, treatment, time, admission_date);
     }
 
     @FXML

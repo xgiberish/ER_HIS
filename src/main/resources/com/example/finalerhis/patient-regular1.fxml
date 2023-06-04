@@ -109,7 +109,9 @@
                                           <Button fx:id="waitingRoomButton" mnemonicParsing="false" prefHeight="32.0" prefWidth="130.0" styleClass="button-default" text="Waiting Room" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                        </children>
                                                 </GridPane>
-                                    <TextArea fx:id="treatmentField" layoutX="14.0" layoutY="97.0" prefHeight="118.0" prefWidth="243.0" />
+                                    <TextArea fx:id="treatmentField" editable="false" layoutX="14.0" layoutY="97.0" prefHeight="118.0" prefWidth="243.0" />
+                                    <Text layoutX="277.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time:" />
+                                    <TextField fx:id="timeTextField" editable="false" layoutX="313.0" layoutY="21.0" prefHeight="25.0" prefWidth="48.0" />
                                             </children>
                                         </AnchorPane>
                                     </content>
