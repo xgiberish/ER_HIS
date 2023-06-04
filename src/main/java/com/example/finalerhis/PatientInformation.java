@@ -94,6 +94,10 @@ public class PatientInformation {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("add-medication.fxml"));
             Parent root = fxmlLoader.load();
+
+            AddMedication addMedicationController = fxmlLoader.getController();
+            addMedicationController.loadPatientInformation(getPatientName(), getPatientID());
+
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setTitle("Add Medication");
@@ -126,6 +130,7 @@ public class PatientInformation {
                 String admissionDate = resultSet.getString("admission_date");
                 String triage = resultSet.getString("triage");
                 String treatment = resultSet.getString("treatment");
+
 
                 nameField.setText(name);
                 diagnosisField.setText(diagnosis);
@@ -294,5 +299,11 @@ public class PatientInformation {
     }
 
 
+    public String getPatientName() {
+        return nameField.getText();
+    }
 
+    public String getPatientID() {
+        return idField.getText();
+    }
 }

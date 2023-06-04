@@ -2,6 +2,8 @@ package com.example.finalerhis;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -15,6 +17,12 @@ import java.util.stream.Collectors;
 public class AddMedication {
     @FXML
     private TextField nameTextField;
+
+    @FXML
+    private TextField patientName;
+    @FXML
+    private TextField patientID;
+
     @FXML
     private Button addMedicationButton;
     @FXML
@@ -27,6 +35,13 @@ public class AddMedication {
 
     public AddMedication() {
     }
+    public void loadPatientInformation(String patientName, String patientID) {
+        // Set the retrieved information to the text fields
+        this.patientName.setText(patientName);
+        this.patientID.setText(patientID);
+    }
+
+
 
     @FXML
     public void initialize() {
@@ -44,6 +59,7 @@ public class AddMedication {
             }
 
             medicationListView.setItems(FXCollections.observableArrayList(allMedications));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
