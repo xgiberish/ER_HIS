@@ -61,7 +61,9 @@ public class PatientInformation {
     String password = "";
 
     private Stage stage;
-    private boolean isNewPatient = false;
+    int roomNumber = 1;
+
+    boolean isNewPatient = false;
 
     @FXML
     private void initialize() {
@@ -174,7 +176,6 @@ public class PatientInformation {
                     idField.setEditable(false);
                     idField.setText(generateNewPatientID());
 
-                    isNewPatient = true;
                     nameField.setEditable(true);
                     diagnosisField.setEditable(true);
                     ageField.setEditable(true);
@@ -187,6 +188,7 @@ public class PatientInformation {
                     dischargeButton.setDisable(false);
                     addMedication.setDisable(false);
                     waitingRoomButton.setDisable(false);
+                    isNewPatient = true;
                 } else {
                     clearFields();
                 }
@@ -251,35 +253,44 @@ public class PatientInformation {
     }
 
     @FXML
-    private void onAdmitButtonClicked() {
-        if (!isNewPatient) {
-            Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
-            confirmDialog.setTitle("Confirmation");
-            confirmDialog.setHeaderText("Create New Patient?");
-            confirmDialog.setContentText("Are you sure you want to create a new patient?");
+    private void updatePatientData(String id, String name, String diagnosis, String age, String gender, String allergies, String triage, String treatment, String time, LocalDate admission_date) {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "UPDATE patient_information SET full_name = ?, age = ?, gender = ?, allergies = ?, time = ?, triage = ?, diagnosis = ?, treatment = ?, admission_date = ? WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, name);
+            statement.setString(2, age);
+            statement.setString(3, gender);
+            statement.setString(4, allergies);
+            statement.setString(5, time);
+            statement.setString(6, triage);
+            statement.setString(7, diagnosis);
+            statement.setString(8, treatment);
+            statement.setDate(9, Date.valueOf(admission_date));
+            statement.setString(10, id);
 
-            ButtonType confirmButton = new ButtonType("Create New Patient");
-            ButtonType cancelButton = new ButtonType("Cancel");
+            int rowsAffected = statement.executeUpdate();
 
-            confirmDialog.getButtonTypes().setAll(confirmButton, cancelButton);
-
-            Optional<ButtonType> result = confirmDialog.showAndWait();
-            if (result.isPresent() && result.get() == confirmButton) {
-                isNewPatient = true;
-                nameField.setEditable(true);
-                diagnosisField.setEditable(true);
-                ageField.setEditable(true);
-                genderField.setEditable(true);
-                admissionDateField.setEditable(true);
-                allergiesField.setEditable(true);
-                dischargeButton.setDisable(false);
+            Alert alert;
+            if (rowsAffected > 0) {
+                alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Patient information updated successfully.");
             } else {
-                return;
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Failed to update patient information.");
             }
+            alert.showAndWait();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
 
-        int roomNumber = 1; // Room number 1
 
+    @FXML
+    private void onAdmitButtonClicked() {
         String id = idField.getText();
         String name = nameField.getText();
         String diagnosis = diagnosisField.getText();
@@ -290,11 +301,14 @@ public class PatientInformation {
         String treatment = treatmentField.getText();
         String time = timeTextField.getText();
         LocalDate admission_date = LocalDate.now();
+        updateRoomsTable(roomNumber, id);
 
+        if (isNewPatient) {
+            insertPatientData(id, name, diagnosis, age, gender, allergies, triage, treatment, time, admission_date);
+        } else {
+            updatePatientData(id, name, diagnosis, age, gender, allergies, triage, treatment, time, admission_date);
+        }
 
-        updateRoomsTable(1, id);
-
-        insertPatientData(id, name, diagnosis, age, gender, allergies, triage, treatment, time, admission_date);
     }
     private void updateRoomsTable(int roomNumber, String patientID) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
@@ -320,16 +334,14 @@ public class PatientInformation {
     private void onDischargeButtonClicked() {
         clearFields();
         dischargeButton.setDisable(true);
-        updateRoomPatientId(1,null);
+        updateRoomPatientId(1);
     }
 
-
-    private void updateRoomPatientId(int roomNumber, String patientId) {
+    private void updateRoomPatientId(int roomNumber) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "UPDATE rooms SET patient_id = ? WHERE room_number = ?";
+            String sql = "DELETE FROM rooms WHERE room_number = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, patientId);
-            statement.setInt(2, roomNumber);
+            statement.setInt(1, roomNumber);
 
             int rowsAffected = statement.executeUpdate();
 
@@ -342,6 +354,7 @@ public class PatientInformation {
             e.printStackTrace();
         }
     }
+
 
     private void clearFields() {
         idField.clear();
