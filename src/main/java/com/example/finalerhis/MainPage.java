@@ -7,108 +7,111 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Objects;
-
-import static javafx.application.Application.launch;
+import java.sql.*;
 
 public class MainPage {
+    @FXML
     public TitledPane patientViewPane;
     public TitledPane intensiveRoomsPane;
     public Button logoutButton;
     private Stage stage; // Declare the stage variable
+    String url = "jdbc:mysql://localhost:3306/hospital_users";
+    String username = "root";
+    String password = "";
 
-    // Setter method to set the stage
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
     @FXML
     private void openPatientInformation1(ActionEvent event) {
-        Stage stage = new Stage();
         Parent root = null;
         try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("patient-regular1.fxml")));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("patient-regular1.fxml"));
+            root = loader.load();
+
+            // Retrieve patient ID from the rooms table
+            String patientID = getPatientIDFromRoomNumber(1); // Replace 1 with the actual room number
+
+            if (patientID != null) {
+                // If patient ID is present, fill out the information
+                PatientInformation patientInfoController = loader.getController();
+                patientInfoController.fillFieldsWithPatientData(patientID);
+            } else {
+                // If no patient ID is present, display a message
+                PatientInformation patientInfoController = loader.getController();
+                patientInfoController.displayEmptyRoomMessage();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        stage.setScene(new Scene(root));
-        stage.setTitle("Regular Room 1");
-        stage.show();
+        Stage newStage = new Stage(); // Create a new Stage instance
+        newStage.setScene(new Scene(root));
+        newStage.setTitle("Regular Room 1");
+        newStage.show();
     }
 
+    private String getPatientIDFromRoomNumber(int roomNumber) {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "SELECT patient_Id FROM rooms WHERE room_number = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, roomNumber);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("patient_Id");
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     @FXML
     private void openPatientInformation2(ActionEvent event) {
-        Stage stage = new Stage();
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("patient-regular2.fxml")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        stage.setScene(new Scene(root));
-        stage.setTitle("Regular Room 2");
-        stage.show();
+        openPatientInformation("patient-regular2.fxml", "Regular Room 2");
     }
+
     @FXML
     private void openPatientInformation3(ActionEvent event) {
-        Stage stage = new Stage();
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("patient-regular3.fxml")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        stage.setScene(new Scene(root));
-        stage.setTitle("Regular Room 3");
-        stage.show();
+        openPatientInformation("patient-regular3.fxml", "Regular Room 3");
     }
+
     @FXML
     private void openPatientInformation4(ActionEvent event) {
-        Stage stage = new Stage();
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("patient-regular4.fxml")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        stage.setScene(new Scene(root));
-        stage.setTitle("Regular Room 4");
-        stage.show();
+        openPatientInformation("patient-regular4.fxml", "Regular Room 4");
     }
+
     @FXML
     private void openPatientInformationICU1(ActionEvent event) {
-        Stage stage = new Stage();
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("patient-icu1.fxml")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        stage.setScene(new Scene(root));
-        stage.setTitle("Intensive Room 1");
-        stage.show();
+        openPatientInformation("patient-icu1.fxml", "Intensive Room 1");
     }
 
     @FXML
-
     private void openPatientInformationICU2(ActionEvent event) {
-        Stage stage = new Stage();
+        openPatientInformation("patient-icu2.fxml", "Intensive Room 2");
+    }
+
+    private void openPatientInformation(String fxmlFile, String title) {
         Parent root = null;
         try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("patient-icu2.fxml")));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            root = loader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        stage.setScene(new Scene(root));
-        stage.setTitle("Intensive Room 2");
-        stage.show();
+        Stage newStage = new Stage(); // Create a new Stage instance
+        newStage.setScene(new Scene(root));
+        newStage.setTitle(title);
+        newStage.show();
     }
+
     @FXML
     private TitledPane regularRoomsPane;
 
@@ -119,10 +122,7 @@ public class MainPage {
 
     @FXML
     private void handleLogout(ActionEvent event) {
-        Stage stage = (Stage) logoutButton.getScene().getWindow();
-        LogoutUtils.handleLogout(event, stage);
+        Stage currentStage = (Stage) logoutButton.getScene().getWindow();
+        LogoutUtils.handleLogout(event, currentStage);
     }
-
-
-
 }

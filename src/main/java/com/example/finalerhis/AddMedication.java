@@ -4,12 +4,16 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +25,16 @@ public class AddMedication {
 
     @FXML
     private TextField patientName;
+
     @FXML
     private TextField patientID;
 
     @FXML
     private Button addMedicationButton;
+
+    private PatientInformation patientInformationController;
+
+
     @FXML
     private ListView<String> medicationListView;
 
@@ -36,13 +45,12 @@ public class AddMedication {
 
     public AddMedication() {
     }
+
     public void loadPatientInformation(String patientName, String patientID) {
         // Set the retrieved information to the text fields
         this.patientName.setText(patientName);
         this.patientID.setText(patientID);
     }
-
-
 
     @FXML
     public void initialize() {
@@ -86,6 +94,9 @@ public class AddMedication {
                 int rowsAffected = statement.executeUpdate();
                 if (rowsAffected > 0) {
                     showAlert(Alert.AlertType.INFORMATION, "Medication Added", "Medication added successfully!");
+                    if (patientInformationController != null) {
+                        patientInformationController.updateTreatment(fetchTreatmentFromDatabase());
+                    }
                 } else {
                     showAlert(Alert.AlertType.ERROR, "Medication Addition Failed", "Failed to add medication!");
                 }
@@ -95,7 +106,26 @@ public class AddMedication {
             }
         }
     }
+    private String fetchTreatmentFromDatabase() {
+        String patientIdValue = patientID.getText().trim();
+        String treatment = "";
 
+        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT treatment FROM patient_information WHERE id = ?")) {
+
+            statement.setString(1, patientIdValue);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                treatment = resultSet.getString("treatment");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return treatment;
+    }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
@@ -105,8 +135,6 @@ public class AddMedication {
         alert.showAndWait();
     }
 
-
-
     @FXML
     private void handleSearchMedication(KeyEvent event) {
         String searchQuery = nameTextField.getText().trim();
@@ -115,4 +143,9 @@ public class AddMedication {
                 .collect(Collectors.toList());
         medicationListView.setItems(FXCollections.observableArrayList(filteredMedications));
     }
+    public void setPatientInformationController(PatientInformation patientInformationController) {
+        this.patientInformationController = patientInformationController;
+    }
+
+
 }

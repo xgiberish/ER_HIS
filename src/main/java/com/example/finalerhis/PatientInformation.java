@@ -107,6 +107,9 @@ public class PatientInformation {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("add-medication.fxml"));
             Parent root = fxmlLoader.load();
 
+            AddMedication addMedicationController2 = fxmlLoader.getController();
+            addMedicationController2.setPatientInformationController(this);
+
             AddMedication addMedicationController = fxmlLoader.getController();
             addMedicationController.loadPatientInformation(getPatientName(), getPatientID());
 
@@ -119,6 +122,7 @@ public class PatientInformation {
             e.printStackTrace();
         }
     }
+
 
     @FXML
     private void onSearchButtonClicked() {
@@ -308,21 +312,43 @@ public class PatientInformation {
         } else {
             updatePatientData(id, name, diagnosis, age, gender, allergies, triage, treatment, time, admission_date);
         }
+        idField.setEditable(false);
+        dischargeButton.setDisable(false);
 
     }
     private void updateRoomsTable(int roomNumber, String patientID) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "UPDATE rooms SET patient_id = ? WHERE room_number = ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, patientID);
-            statement.setInt(2, roomNumber);
+            String sqlCheckRoom = "SELECT COUNT(*) FROM rooms WHERE room_number = ?";
+            PreparedStatement checkRoomStatement = connection.prepareStatement(sqlCheckRoom);
+            checkRoomStatement.setInt(1, roomNumber);
+            ResultSet resultSet = checkRoomStatement.executeQuery();
+            resultSet.next();
+            int roomCount = resultSet.getInt(1);
 
-            int rowsAffected = statement.executeUpdate();
+            if (roomCount > 0) {
+                String sqlUpdateRoom = "UPDATE rooms SET patient_id = ? WHERE room_number = ?";
+                PreparedStatement updateStatement = connection.prepareStatement(sqlUpdateRoom);
+                updateStatement.setString(1, patientID);
+                updateStatement.setInt(2, roomNumber);
+                int rowsAffected = updateStatement.executeUpdate();
 
-            if (rowsAffected > 0) {
-                showAlert(Alert.AlertType.INFORMATION, "Admission Success", "Patient admitted successfully.");
+                if (rowsAffected > 0) {
+                    showAlert(Alert.AlertType.INFORMATION, "Admission Success", "Patient admitted successfully.");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Admission Failure", "Failed to admit patient.");
+                }
             } else {
-                showAlert(Alert.AlertType.ERROR, "Admission Failure", "Failed to admit patient.");
+                String sqlCreateRoom = "INSERT INTO rooms (room_number, patient_id) VALUES (?, ?)";
+                PreparedStatement createStatement = connection.prepareStatement(sqlCreateRoom);
+                createStatement.setInt(1, roomNumber);
+                createStatement.setString(2, patientID);
+                int rowsAffected = createStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    showAlert(Alert.AlertType.INFORMATION, "Room Creation Success", "Room created and patient admitted successfully.");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Room Creation Failure", "Failed to create room and admit patient.");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -330,16 +356,24 @@ public class PatientInformation {
     }
 
 
+
     @FXML
     private void onDischargeButtonClicked() {
         clearFields();
         dischargeButton.setDisable(true);
         updateRoomPatientId(1);
+
+        idField.setEditable(false);
+        nameField.setEditable(false);
+        diagnosisField.setEditable(false);
+        ageField.setEditable(false);
+        genderField.setEditable(false);
+        allergiesField.setEditable(false);
     }
 
     private void updateRoomPatientId(int roomNumber) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "DELETE FROM rooms WHERE room_number = ?";
+            String sql = "UPDATE rooms SET patient_id = NULL WHERE room_number = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, roomNumber);
 
@@ -354,6 +388,86 @@ public class PatientInformation {
             e.printStackTrace();
         }
     }
+    public void updateTreatment(String newTreatment) {
+        // Update the treatment field with the new treatment value
+        treatmentField.setText(newTreatment);
+    }
+
+
+    @FXML
+    void fillFieldsWithPatientData(String patientID) {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "SELECT * FROM patient_information WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, patientID);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String name = resultSet.getString("full_name");
+                String diagnosis = resultSet.getString("diagnosis");
+                String age = resultSet.getString("age");
+                String gender = resultSet.getString("gender");
+                String allergies = resultSet.getString("allergies");
+                String admission_date = resultSet.getString("admission_date");
+                String triage = resultSet.getString("triage");
+                String treatment = resultSet.getString("treatment");
+                String id = resultSet.getString("id");
+
+
+                nameField.setText(name);
+                diagnosisField.setText(diagnosis);
+                ageField.setText(age);
+                genderField.setText(gender);
+                allergiesField.setText(allergies);
+                admissionDateField.setText(admission_date);
+                triageComboBox.setValue(triage);
+                treatmentField.setText(treatment);
+                idField.setText(id);
+
+                admitButton.setDisable(false);
+                addMedication.setDisable(false);
+                waitingRoomButton.setDisable(false);
+                nameField.setEditable(true);
+                diagnosisField.setEditable(true);
+                ageField.setEditable(true);
+                genderField.setEditable(true);
+                allergiesField.setEditable(true);
+                admissionDateField.setEditable(true);
+                triageComboBox.setEditable(true);
+                treatmentField.setEditable(true);
+                dischargeButton.setDisable(false);
+                admitButton.setDisable(true);
+            } else {
+                clearFields();
+                showAlert(AlertType.ERROR, "Patient Not Found", "Patient with ID " + patientID + " not found.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String fetchTreatmentFromDatabase() {
+        String patientIdValue = getPatientID(); // Replace with the method to get the patient ID
+        String treatment = "";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT treatment FROM user_information WHERE id = ?")) {
+
+            statement.setString(1, patientIdValue);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                treatment = resultSet.getString("treatment");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return treatment;
+    }
+
+
 
 
     private void clearFields() {
@@ -381,6 +495,15 @@ public class PatientInformation {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    public void displayEmptyRoomMessage() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Room Empty");
+        alert.setHeaderText(null);
+        alert.setContentText("The room is empty.");
+
         alert.showAndWait();
     }
 }
