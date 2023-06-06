@@ -29,12 +29,6 @@ public class MainPage {
 
     @FXML
     private void openPatientInformation1(ActionEvent event) {
-        // Code to handle opening a bigger pane with patient information
-        // You can use JavaFX APIs to create and show the additional pane with patient information
-        // Retrieve the relevant patient information based on the clicked button and populate the pane
-        // Show the pane using a new stage or a dialog
-
-        // Example code to create a new stage and show the patient information pane
         Stage stage = new Stage();
         Parent root = null;
         try {
@@ -43,17 +37,13 @@ public class MainPage {
             throw new RuntimeException(e);
         }
         stage.setScene(new Scene(root));
+        stage.setTitle("Regular Room 1");
         stage.show();
     }
 
+
     @FXML
     private void openPatientInformation2(ActionEvent event) {
-        // Code to handle opening a bigger pane with patient information
-        // You can use JavaFX APIs to create and show the additional pane with patient information
-        // Retrieve the relevant patient information based on the clicked button and populate the pane
-        // Show the pane using a new stage or a dialog
-
-        // Example code to create a new stage and show the patient information pane
         Stage stage = new Stage();
         Parent root = null;
         try {
@@ -62,16 +52,11 @@ public class MainPage {
             throw new RuntimeException(e);
         }
         stage.setScene(new Scene(root));
+        stage.setTitle("Regular Room 2");
         stage.show();
     }
     @FXML
     private void openPatientInformation3(ActionEvent event) {
-        // Code to handle opening a bigger pane with patient information
-        // You can use JavaFX APIs to create and show the additional pane with patient information
-        // Retrieve the relevant patient information based on the clicked button and populate the pane
-        // Show the pane using a new stage or a dialog
-
-        // Example code to create a new stage and show the patient information pane
         Stage stage = new Stage();
         Parent root = null;
         try {
@@ -80,16 +65,11 @@ public class MainPage {
             throw new RuntimeException(e);
         }
         stage.setScene(new Scene(root));
+        stage.setTitle("Regular Room 3");
         stage.show();
     }
     @FXML
     private void openPatientInformation4(ActionEvent event) {
-        // Code to handle opening a bigger pane with patient information
-        // You can use JavaFX APIs to create and show the additional pane with patient information
-        // Retrieve the relevant patient information based on the clicked button and populate the pane
-        // Show the pane using a new stage or a dialog
-
-        // Example code to create a new stage and show the patient information pane
         Stage stage = new Stage();
         Parent root = null;
         try {
@@ -98,16 +78,11 @@ public class MainPage {
             throw new RuntimeException(e);
         }
         stage.setScene(new Scene(root));
+        stage.setTitle("Regular Room 4");
         stage.show();
     }
     @FXML
     private void openPatientInformationICU1(ActionEvent event) {
-        // Code to handle opening a bigger pane with patient information
-        // You can use JavaFX APIs to create and show the additional pane with patient information
-        // Retrieve the relevant patient information based on the clicked button and populate the pane
-        // Show the pane using a new stage or a dialog
-
-        // Example code to create a new stage and show the patient information pane
         Stage stage = new Stage();
         Parent root = null;
         try {
@@ -116,18 +91,13 @@ public class MainPage {
             throw new RuntimeException(e);
         }
         stage.setScene(new Scene(root));
+        stage.setTitle("Intensive Room 1");
         stage.show();
     }
 
     @FXML
 
     private void openPatientInformationICU2(ActionEvent event) {
-        // Code to handle opening a bigger pane with patient information
-        // You can use JavaFX APIs to create and show the additional pane with patient information
-        // Retrieve the relevant patient information based on the clicked button and populate the pane
-        // Show the pane using a new stage or a dialog
-
-        // Example code to create a new stage and show the patient information pane
         Stage stage = new Stage();
         Parent root = null;
         try {
@@ -136,6 +106,7 @@ public class MainPage {
             throw new RuntimeException(e);
         }
         stage.setScene(new Scene(root));
+        stage.setTitle("Intensive Room 2");
         stage.show();
     }
     @FXML

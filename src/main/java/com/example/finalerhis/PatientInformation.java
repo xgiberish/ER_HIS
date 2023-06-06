@@ -56,6 +56,11 @@ public class PatientInformation {
     @FXML
     private RadialGradient triageGradient;
 
+    String url = "jdbc:mysql://localhost:3306/hospital_users";
+    String username = "root";
+    String password = "";
+
+    private Stage stage;
     private boolean isNewPatient = false;
 
     @FXML
@@ -75,8 +80,6 @@ public class PatientInformation {
         String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
         timeTextField.setText(currentTime);
 
-        // Add items to the triageComboBox
-       // triageComboBox.getItems().addAll("white", "blue", "green", "orange", "red");
         triageComboBox.setOnAction(this::onTriageComboBoxAction);
     }
     @FXML
@@ -118,10 +121,6 @@ public class PatientInformation {
     @FXML
     private void onSearchButtonClicked() {
         String id = idField.getText();
-        String url = "jdbc:mysql://localhost:3306/hospital_users";
-        String username = "root";
-        String password = "";
-
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             String sql = "SELECT * FROM patient_information WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -159,7 +158,7 @@ public class PatientInformation {
                 admissionDateField.setEditable(true);
                 triageComboBox.setEditable(true);
                 treatmentField.setEditable(true);
-                dischargeButton.setDisable(false);
+                dischargeButton.setDisable(true);
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Patient Not Found");
@@ -198,10 +197,6 @@ public class PatientInformation {
     }
 
     private String generateNewPatientID() {
-        String url = "jdbc:mysql://localhost:3306/hospital_users";
-        String username = "root";
-        String password = "";
-
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             String sql = "SELECT id FROM patient_information ORDER BY id DESC LIMIT 1";
             Statement statement = connection.createStatement();
@@ -221,10 +216,6 @@ public class PatientInformation {
 
     @FXML
     private void insertPatientData(String id, String name, String diagnosis, String age, String gender, String allergies, String triage, String treatment, String time, LocalDate admission_date) {
-        String url = "jdbc:mysql://localhost:3306/hospital_users";
-        String username = "root";
-        String password = "";
-
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             String sql = "INSERT INTO patient_information (id, full_name, age, gender, allergies, time, triage, diagnosis, treatment, admission_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -287,6 +278,8 @@ public class PatientInformation {
             }
         }
 
+        int roomNumber = 1; // Room number 1
+
         String id = idField.getText();
         String name = nameField.getText();
         String diagnosis = diagnosisField.getText();
@@ -298,13 +291,56 @@ public class PatientInformation {
         String time = timeTextField.getText();
         LocalDate admission_date = LocalDate.now();
 
+
+        updateRoomsTable(1, id);
+
         insertPatientData(id, name, diagnosis, age, gender, allergies, triage, treatment, time, admission_date);
     }
+    private void updateRoomsTable(int roomNumber, String patientID) {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "UPDATE rooms SET patient_id = ? WHERE room_number = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, patientID);
+            statement.setInt(2, roomNumber);
+
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                showAlert(Alert.AlertType.INFORMATION, "Admission Success", "Patient admitted successfully.");
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Admission Failure", "Failed to admit patient.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @FXML
     private void onDischargeButtonClicked() {
         clearFields();
         dischargeButton.setDisable(true);
+        updateRoomPatientId(1,null);
+    }
+
+
+    private void updateRoomPatientId(int roomNumber, String patientId) {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "UPDATE rooms SET patient_id = ? WHERE room_number = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, patientId);
+            statement.setInt(2, roomNumber);
+
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                showAlert(Alert.AlertType.INFORMATION, "Discharge Success", "Patient discharged successfully.");
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Discharge Failure", "Failed to discharge patient.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void clearFields() {
@@ -319,7 +355,6 @@ public class PatientInformation {
         treatmentField.clear();
     }
 
-
     public String getPatientName() {
         return nameField.getText();
     }
@@ -327,4 +362,13 @@ public class PatientInformation {
     public String getPatientID() {
         return idField.getText();
     }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
+

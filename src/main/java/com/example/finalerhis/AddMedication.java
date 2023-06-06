@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -67,35 +68,43 @@ public class AddMedication {
 
     @FXML
     private void handleAddMedication() {
-        String medicationName = nameTextField.getText().trim();
-        if (!medicationName.isEmpty()) {
-            medicationListView.getItems().add(medicationName);
-            nameTextField.clear();
+        String selectedMedication = medicationListView.getSelectionModel().getSelectedItem();
+        if (selectedMedication != null) {
+            String patientIdValue = patientID.getText().trim();
 
-            String selectedMedication = medicationListView.getSelectionModel().getSelectedItem();
-            if (selectedMedication != null) {
-                String patientIdValue = patientID.getText().trim();
+            try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+                 PreparedStatement statement = connection.prepareStatement(
+                         "UPDATE patient_information SET treatment = CONCAT(IFNULL(treatment, ''), ?) WHERE id = ?")) {
 
-                try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
-                     PreparedStatement statement = connection.prepareStatement(
-                             "UPDATE patient_information SET treatment = ? WHERE id = ?")) {
+                String[] medicationParts = selectedMedication.split(":");
+                int medicationId = Integer.parseInt(medicationParts[0].trim());
+                String medicationName = medicationParts[1].trim();
 
-                    statement.setString(1, selectedMedication);
-                    statement.setString(2, patientIdValue);
+                statement.setString(1, "\n" + medicationId + ": " + medicationName);
+                statement.setString(2, patientIdValue);
 
-                    int rowsAffected = statement.executeUpdate();
-                    if (rowsAffected > 0) {
-                        System.out.println("Medication added successfully!");
-                    } else {
-                        System.out.println("Failed to add medication!");
-                    }
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                int rowsAffected = statement.executeUpdate();
+                if (rowsAffected > 0) {
+                    showAlert(Alert.AlertType.INFORMATION, "Medication Added", "Medication added successfully!");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Medication Addition Failed", "Failed to add medication!");
                 }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
+
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
 
     @FXML
