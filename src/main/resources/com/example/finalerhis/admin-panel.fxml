@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -82,21 +84,31 @@
                                                 <TextField fx:id="adminIDTextField" layoutX="120.0" layoutY="10.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="44.0" text="Full Name:" />
                                                 <TextField fx:id="adminFullNameTextField" layoutX="120.0" layoutY="40.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="75.0" text="DOB:" />
+                                                <Label layoutX="14.0" layoutY="75.0" text="Age:" />
                                                 <TextField fx:id="DOBTextField" layoutX="120.0" layoutY="70.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="105.0" text="Triage Level:" />
-                                                <ComboBox layoutX="120.0" layoutY="103.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="141.0" text="Insurance:" />
-                                                <ComboBox layoutX="120.0" layoutY="137.0" prefWidth="120.0" />
-                                                <Label layoutX="13.0" layoutY="171.0" text="Treatment:" />
-                                                <ComboBox layoutX="120.0" layoutY="167.0" prefWidth="120.0" />
-                                                <Label layoutX="15.0" layoutY="200.0" text="Diagnosis:" />
-                                                <TextField fx:id="diagnosisTextField" layoutX="120.0" layoutY="196.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="229.0" text="Notes:" />
-                                                <TextArea layoutX="120.0" layoutY="230.0" prefHeight="80.0" prefWidth="240.0" />
-                                                <Button fx:id="searchPatient" layoutX="14.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Search" />
-                                                <Button fx:id="savePatient" layoutX="120.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Save" />
-                                                <Button fx:id="deletePatient" layoutX="225.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Delete" />
+                                                <ComboBox fx:id="triageComboBoxAdmin" layoutX="120.0" layoutY="101.0" prefHeight="25.0" prefWidth="80.0">
+                                                    <items>
+                                                        <FXCollections fx:factory="observableArrayList">
+                                                            <String fx:value="white" />
+                                                            <String fx:value="blue" />
+                                                            <String fx:value="green" />
+                                                            <String fx:value="orange" />
+                                                            <String fx:value="red" />
+                                                        </FXCollections>
+                                                    </items>
+                                                </ComboBox>                                                <Label layoutX="14.0" layoutY="141.0" text="Gender:" />
+                                                <Label layoutX="14.0" layoutY="232.0" text="Treatment:" />
+                                                <Label layoutX="15.0" layoutY="205.0" text="Diagnosis:" />
+                                                <TextField fx:id="diagnosisTextField" layoutX="120.0" layoutY="201.0" prefWidth="120.0" />
+                                                <TextArea fx:id="treatmentTextAreaadmin" layoutX="120.0" layoutY="232.0" prefHeight="80.0" prefWidth="240.0" />
+                                                <Button fx:id="searchPatient" layoutX="14.0" layoutY="374.0" onAction="#onSearchPatient" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Search" />
+                                                <Button fx:id="savePatient" layoutX="120.0" layoutY="374.0" onAction="#onSavePatient" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Save" />
+                                                <Button fx:id="deletePatient" layoutX="225.0" layoutY="374.0" onAction="#onDeletePatient" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Delete" />
+                                    <TextField fx:id="genderTextField" layoutX="120.0" layoutY="137.0" prefWidth="120.0" />
+                                    <TextField fx:id="allergiesTextField" layoutX="120.0" layoutY="170.0" prefWidth="120.0" />
+                                    <Label layoutX="14.0" layoutY="174.0" text="Allergies:" />
+                                    <Button fx:id="clearPatient" layoutX="327.0" layoutY="374.0" onAction="#clearFields" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Clear" />
                                             </children>
                                         </AnchorPane>
                                     </content>
@@ -112,14 +124,15 @@
                                                 <Label layoutX="14.0" layoutY="74.0" text="Last Name:" />
                                                 <TextField fx:id="staffLastName" layoutX="120.0" layoutY="70.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="104.0" text="DOB:" />
-                                                <TextField fx:id="DOBTextField" layoutX="120.0" layoutY="100.0" prefWidth="120.0" />
+                                                <TextField fx:id="dobTextFieldStaff" layoutX="120.0" layoutY="100.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="134.0" text="Position:" />
                                                 <TextField fx:id="positionTextField" layoutX="120.0" layoutY="130.0" prefWidth="120.0" />
-                                    <Button fx:id="searchStaff" layoutX="14.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Search" />
-                                    <Button fx:id="saveStaff" layoutX="120.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Save" />
-                                    <Button fx:id="deleteStaff" layoutX="225.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Delete" />
-                                    <TextArea layoutX="120.0" layoutY="158.0" prefHeight="80.0" prefWidth="240.0" />
+                                    <Button fx:id="searchStaff" layoutX="14.0" layoutY="374.0" onAction="#onSearchStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Search" />
+                                    <Button fx:id="saveStaff" layoutX="120.0" layoutY="374.0" onAction="#onSaveStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Save" />
+                                    <Button fx:id="deleteStaff" layoutX="225.0" layoutY="374.0" onAction="#onDeleteStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Delete" />
+                                    <TextArea fx:id="staffNotes" layoutX="120.0" layoutY="158.0" prefHeight="80.0" prefWidth="240.0" />
                                     <Label layoutX="14.0" layoutY="158.0" text="Notes:" />
+                                    <Button fx:id="clearStaff" layoutX="328.0" layoutY="374.0" onAction="#clearFieldsStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Clear" />
                                             </children>
                                         </AnchorPane>
                                     </content>
