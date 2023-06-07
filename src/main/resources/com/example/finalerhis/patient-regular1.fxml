@@ -19,15 +19,55 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.RadialGradient?>
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="368.0" prefWidth="601.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalerhis.PatientInformation">
+<VBox prefHeight="426.0" prefWidth="622.0" styleClass="root-container" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalerhis.PatientRegular1">
     <children>
-        <SplitPane dividerPositions="0.29797979797979796" layoutY="23.0">
+        <MenuBar prefHeight="25.0" prefWidth="625.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="New" />
+                        <MenuItem mnemonicParsing="false" text="Open…" />
+                        <Menu mnemonicParsing="false" text="Open Recent" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                        <MenuItem mnemonicParsing="false" text="Save" />
+                        <MenuItem mnemonicParsing="false" text="Save As…" />
+                        <MenuItem mnemonicParsing="false" text="Revert" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Preferences…" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Quit" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Undo" />
+                        <MenuItem mnemonicParsing="false" text="Redo" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Cut" />
+                        <MenuItem mnemonicParsing="false" text="Copy" />
+                        <MenuItem mnemonicParsing="false" text="Paste" />
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Select All" />
+                        <MenuItem mnemonicParsing="false" text="Unselect All" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About ERHIS" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <SplitPane dividerPositions="0.29797979797979796" layoutY="23.0" VBox.vgrow="ALWAYS">
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="210.0" style="-fx-background-color: #154360;">
                     <children>
@@ -160,44 +200,5 @@
                 </AnchorPane>
             </items>
         </SplitPane>
-        <MenuBar prefHeight="25.0" prefWidth="625.0">
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="New" />
-                        <MenuItem mnemonicParsing="false" text="Open…" />
-                        <Menu mnemonicParsing="false" text="Open Recent" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Close" />
-                        <MenuItem mnemonicParsing="false" text="Save" />
-                        <MenuItem mnemonicParsing="false" text="Save As…" />
-                        <MenuItem mnemonicParsing="false" text="Revert" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Preferences…" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Quit" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Undo" />
-                        <MenuItem mnemonicParsing="false" text="Redo" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Cut" />
-                        <MenuItem mnemonicParsing="false" text="Copy" />
-                        <MenuItem mnemonicParsing="false" text="Paste" />
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Select All" />
-                        <MenuItem mnemonicParsing="false" text="Unselect All" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About ERHIS" />
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
     </children>
-</AnchorPane>
+</VBox>

@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-public class PatientInformation {
+public class PatientRegular1 {
     public TextField timeTextField;
     @FXML
     private Button waitingRoomButton;

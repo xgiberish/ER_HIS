@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -17,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalerhis.AdminPanel" stylesheets="@styles.css">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalerhis.AdminPanel">
 
     <children>
         <MenuBar>
@@ -63,13 +62,12 @@
             <items>
                 <AnchorPane prefHeight="400.0" prefWidth="209.0" style="-fx-background-color: #154360;">
                     <children>
-                        <Accordion layoutX="-3.0" layoutY="96.0" prefHeight="243.0" prefWidth="202.0" />
                         <Text fill="#c6c6c6" layoutX="14.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Admin Panel">
                             <font>
                                 <Font size="24.0" />
                             </font>
                         </Text>
-                  <Button fx:id="logoutButton2" layoutX="173.0" layoutY="33.0" mnemonicParsing="false" onAction="#handleLogout" styleClass="button-default" text="Logout" />
+                  <Button fx:id="logoutButton2" layoutX="73.0" layoutY="79.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="41.0" prefWidth="90.0" styleClass="button-default" text="Logout" />
                     </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="391.0" style="-fx-background-image: url('file:///C:/Users/Dina/Desktop/Cs/LastSemester/SeniorProject/FinalERHIS/images/SurgicalHall.jpg'); -fx-background-size: cover; -fx-background-position: center; -fx-background-repeat: no-repeat;">
@@ -78,53 +76,50 @@
                             <tabs>
                                 <Tab text="Patients">
                                     <content>
-                                        <AnchorPane style="-fx-background-color: #868686;">
+                                        <AnchorPane style="-fx-background-color: #CCCCCC;">
                                             <children>
-                                                <Label layoutX="14.0" layoutY="14.0" text="ID:" textFill="#c6c6c6" />
-                                                <TextField layoutX="120.0" layoutY="10.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="44.0" text="First Name:" />
-                                                <TextField layoutX="120.0" layoutY="40.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="74.0" text="Last Name:" />
-                                                <TextField layoutX="120.0" layoutY="70.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="104.0" text="DOB:" />
-                                                <TextField layoutX="120.0" layoutY="100.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="134.0" text="Condition:" />
-                                                <TextField layoutX="120.0" layoutY="130.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="164.0" text="Triage Level:" />
-                                                <ComboBox layoutX="120.0" layoutY="160.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="194.0" text="Insurance:" />
-                                                <ComboBox layoutX="120.0" layoutY="190.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="224.0" text="Medications:" />
-                                                <ComboBox layoutX="120.0" layoutY="220.0" prefWidth="120.0" />
-                                                <Button layoutX="250.0" layoutY="220.0" styleClass="button-default" text="+" />
-                                                <Label layoutX="14.0" layoutY="254.0" text="Diagnosis:" />
-                                                <TextField layoutX="120.0" layoutY="250.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="284.0" text="Notes:" />
-                                                <TextArea layoutX="120.0" layoutY="280.0" prefHeight="80.0" prefWidth="240.0" />
-                                                <Button layoutX="14.0" layoutY="374.0" styleClass="button-default" text="Lookup" />
-                                                <Button layoutX="84.0" layoutY="374.0" styleClass="button-default" text="Add New" />
-                                                <Button layoutX="156.0" layoutY="374.0" styleClass="button-default" text="Delete" />
+                                                <Label layoutX="14.0" layoutY="14.0" text="ID:" />
+                                                <TextField fx:id="adminIDTextField" layoutX="120.0" layoutY="10.0" prefWidth="120.0" />
+                                                <Label layoutX="14.0" layoutY="44.0" text="Full Name:" />
+                                                <TextField fx:id="adminFullNameTextField" layoutX="120.0" layoutY="40.0" prefWidth="120.0" />
+                                                <Label layoutX="14.0" layoutY="75.0" text="DOB:" />
+                                                <TextField fx:id="DOBTextField" layoutX="120.0" layoutY="70.0" prefWidth="120.0" />
+                                                <Label layoutX="14.0" layoutY="105.0" text="Triage Level:" />
+                                                <ComboBox layoutX="120.0" layoutY="103.0" prefWidth="120.0" />
+                                                <Label layoutX="14.0" layoutY="141.0" text="Insurance:" />
+                                                <ComboBox layoutX="120.0" layoutY="137.0" prefWidth="120.0" />
+                                                <Label layoutX="13.0" layoutY="171.0" text="Treatment:" />
+                                                <ComboBox layoutX="120.0" layoutY="167.0" prefWidth="120.0" />
+                                                <Label layoutX="15.0" layoutY="200.0" text="Diagnosis:" />
+                                                <TextField fx:id="diagnosisTextField" layoutX="120.0" layoutY="196.0" prefWidth="120.0" />
+                                                <Label layoutX="14.0" layoutY="229.0" text="Notes:" />
+                                                <TextArea layoutX="120.0" layoutY="230.0" prefHeight="80.0" prefWidth="240.0" />
+                                                <Button fx:id="searchPatient" layoutX="14.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Search" />
+                                                <Button fx:id="savePatient" layoutX="120.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Save" />
+                                                <Button fx:id="deletePatient" layoutX="225.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Delete" />
                                             </children>
                                         </AnchorPane>
                                     </content>
                                 </Tab>
                                 <Tab text="Staff">
                                     <content>
-                                        <AnchorPane style="-fx-background-color: #868686;">
+                                        <AnchorPane style="-fx-background-color: #CCCCCC;">
                                             <children>
                                                 <Label layoutX="14.0" layoutY="14.0" text="ID:" />
-                                                <TextField layoutX="120.0" layoutY="10.0" prefWidth="120.0" />
+                                                <TextField fx:id="staffIDTextField" layoutX="120.0" layoutY="10.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="44.0" text="First Name:" />
-                                                <TextField layoutX="120.0" layoutY="40.0" prefWidth="120.0" />
+                                                <TextField fx:id="staffFirstName" layoutX="120.0" layoutY="40.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="74.0" text="Last Name:" />
-                                                <TextField layoutX="120.0" layoutY="70.0" prefWidth="120.0" />
+                                                <TextField fx:id="staffLastName" layoutX="120.0" layoutY="70.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="104.0" text="DOB:" />
-                                                <TextField layoutX="120.0" layoutY="100.0" prefWidth="120.0" />
+                                                <TextField fx:id="DOBTextField" layoutX="120.0" layoutY="100.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="134.0" text="Position:" />
-                                                <TextField layoutX="120.0" layoutY="130.0" prefWidth="120.0" />
-                                                <Button layoutX="14.0" layoutY="374.0" styleClass="button-default" text="Lookup" />
-                                                <Button layoutX="84.0" layoutY="374.0" styleClass="button-default" text="Add New" />
-                                                <Button layoutX="156.0" layoutY="374.0" styleClass="button-default" text="Delete" />
+                                                <TextField fx:id="positionTextField" layoutX="120.0" layoutY="130.0" prefWidth="120.0" />
+                                    <Button fx:id="searchStaff" layoutX="14.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Search" />
+                                    <Button fx:id="saveStaff" layoutX="120.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Save" />
+                                    <Button fx:id="deleteStaff" layoutX="225.0" layoutY="374.0" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Delete" />
+                                    <TextArea layoutX="120.0" layoutY="158.0" prefHeight="80.0" prefWidth="240.0" />
+                                    <Label layoutX="14.0" layoutY="158.0" text="Notes:" />
                                             </children>
                                         </AnchorPane>
                                     </content>

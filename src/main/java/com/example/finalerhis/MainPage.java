@@ -38,11 +38,11 @@ public class MainPage {
 
             if (patientID != null) {
                 // If patient ID is present, fill out the information
-                PatientInformation patientInfoController = loader.getController();
+                PatientRegular1 patientInfoController = loader.getController();
                 patientInfoController.fillFieldsWithPatientData(patientID);
             } else {
                 // If no patient ID is present, display a message
-                PatientInformation patientInfoController = loader.getController();
+                PatientRegular1 patientInfoController = loader.getController();
                 patientInfoController.displayEmptyRoomMessage();
             }
         } catch (IOException e) {

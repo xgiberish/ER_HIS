@@ -68,7 +68,7 @@
                                 <Font size="24.0" />
                             </font>
                         </Label>
-                  <Button fx:id="logoutButton" layoutX="155.0" layoutY="31.0" minHeight="39.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="39.0" prefWidth="89.0" styleClass="button-default" text="Logout" textFill="#c6c6c6" />
+                        <Button fx:id="logoutButton" layoutX="155.0" layoutY="31.0" minHeight="39.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="39.0" prefWidth="89.0" styleClass="button-default" text="Logout" textFill="#c6c6c6" />
                     </children>
                 </Pane>
                 <Accordion prefHeight="419.0" prefWidth="261.0">
@@ -86,7 +86,7 @@
                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="193.0" minWidth="0.0" prefWidth="95.0" />
                                                         </columnConstraints>
                                                         <rowConstraints>
-                                             <RowConstraints maxHeight="205.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="205.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
                                                             <RowConstraints maxHeight="205.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
                                                             <RowConstraints maxHeight="54.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
                                                         </rowConstraints>
@@ -99,9 +99,9 @@
                                                     </GridPane>
                                                 </VBox>
                                             </content>
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
+                                            <font>
+                                                <Font size="18.0" />
+                                            </font>
                                         </TitledPane>
                                         <TitledPane fx:id="intensiveRoomsPane" animated="false" onMouseClicked="#toggleTitledPane" prefHeight="174.0" prefWidth="259.0" text="Intensive Rooms">
                                             <content>
@@ -123,33 +123,33 @@
                                                     </GridPane>
                                                 </VBox>
                                             </content>
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
+                                            <font>
+                                                <Font size="18.0" />
+                                            </font>
                                         </TitledPane>
                                     </panes>
                                 </Accordion>
                             </content>
-                     <font>
-                        <Font size="18.0" />
-                     </font>
+                            <font>
+                                <Font size="18.0" />
+                            </font>
                         </TitledPane>
                         <TitledPane fx:id="patientViewPane" animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" onMouseClicked="#toggleTitledPane" prefHeight="281.0" prefWidth="230.0" text="Patient View">
                             <content>
                                 <VBox spacing="10">
                                     <TableView>
                                         <columns>
-                                            <TableColumn prefWidth="60.0" text="ID" />
-                                            <TableColumn prefWidth="112.0" text="Name" />
-                                 <TableColumn prefWidth="75.0" text="Triage" />
+                                            <TableColumn fx:id="idColumn" prefWidth="60.0" text="ID" />
+                                            <TableColumn fx:id="nameColumn" prefWidth="112.0" text="Name" />
+                                            <TableColumn fx:id="triageColumn" prefWidth="75.0" text="Triage" />
                                         </columns>
                                         <!-- Add patient data to the table -->
                                     </TableView>
                                 </VBox>
                             </content>
-                     <font>
-                        <Font size="18.0" />
-                     </font>
+                            <font>
+                                <Font size="18.0" />
+                            </font>
                         </TitledPane>
                         <TitledPane fx:id="waitingRoomPane" animated="false" onMouseClicked="#toggleTitledPane" prefHeight="275.0" prefWidth="230.0" text="Waiting Room">
                             <content>
@@ -164,9 +164,9 @@
                                     </TableView>
                                 </VBox>
                             </content>
-                     <font>
-                        <Font size="18.0" />
-                     </font>
+                            <font>
+                                <Font size="18.0" />
+                            </font>
                         </TitledPane>
                     </panes>
                 </Accordion>

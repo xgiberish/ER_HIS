@@ -2,18 +2,12 @@ package com.example.finalerhis;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +26,7 @@ public class AddMedication {
     @FXML
     private Button addMedicationButton;
 
-    private PatientInformation patientInformationController;
+    private PatientRegular1 patientInformationController;
 
 
     @FXML
@@ -143,7 +137,7 @@ public class AddMedication {
                 .collect(Collectors.toList());
         medicationListView.setItems(FXCollections.observableArrayList(filteredMedications));
     }
-    public void setPatientInformationController(PatientInformation patientInformationController) {
+    public void setPatientInformationController(PatientRegular1 patientInformationController) {
         this.patientInformationController = patientInformationController;
     }
 
