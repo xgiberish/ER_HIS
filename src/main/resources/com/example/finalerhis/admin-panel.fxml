@@ -18,6 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.DatePicker?>
 <AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalerhis.AdminPanel">
 
     <children>
@@ -85,8 +86,7 @@
                                                 <Label layoutX="14.0" layoutY="44.0" text="Full Name:" />
                                                 <TextField fx:id="adminFullNameTextField" layoutX="120.0" layoutY="40.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="75.0" text="Age:" />
-                                                <TextField fx:id="DOBTextField" layoutX="120.0" layoutY="70.0" prefWidth="120.0" />
-                                                <Label layoutX="14.0" layoutY="105.0" text="Triage Level:" />
+                                                <TextField fx:id="DOBTextField" layoutX="120.0" layoutY="70.0" prefWidth="120.0" />                                                <Label layoutX="14.0" layoutY="105.0" text="Triage Level:" />
                                                 <ComboBox fx:id="triageComboBoxAdmin" layoutX="120.0" layoutY="101.0" prefHeight="25.0" prefWidth="80.0">
                                                     <items>
                                                         <FXCollections fx:factory="observableArrayList">
@@ -124,7 +124,7 @@
                                                 <Label layoutX="14.0" layoutY="74.0" text="Last Name:" />
                                                 <TextField fx:id="staffLastName" layoutX="120.0" layoutY="70.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="104.0" text="DOB:" />
-                                                <TextField fx:id="dobTextFieldStaff" layoutX="120.0" layoutY="100.0" prefWidth="120.0" />
+                                                <DatePicker fx:id="dobDatePickerStaff" layoutX="120.0" layoutY="100.0" prefWidth="120.0" />
                                                 <Label layoutX="14.0" layoutY="134.0" text="Position:" />
                                                 <TextField fx:id="positionTextField" layoutX="120.0" layoutY="130.0" prefWidth="120.0" />
                                     <Button fx:id="searchStaff" layoutX="14.0" layoutY="374.0" onAction="#onSearchStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Search" />

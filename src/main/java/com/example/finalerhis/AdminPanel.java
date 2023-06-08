@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class AdminPanel {
@@ -31,14 +32,13 @@ public class AdminPanel {
     public TextField allergiesTextField;
     public Button clearPatient;
     public Button clearStaff;
-    public TextField dobTextFieldStaff;
     public Button generateUser;
+    public DatePicker dobDatePickerStaff;
     String url = "jdbc:mysql://localhost:3306/hospital_users";
     String username = "root";
     String password = "";
     boolean isNewPatient = false;
     boolean isNewStaffMember = false;
-
 
     private Stage stage; // Declare the stage variable
 
@@ -48,6 +48,12 @@ public class AdminPanel {
     }
     @FXML
     private void initialize(){
+        dobDatePickerStaff.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                String formattedDate = newValue.toString();
+                DOBTextField.setText(formattedDate);
+            }
+        });
         adminFullNameTextField.setEditable(false);
         DOBTextField.setEditable(false);
         triageComboBoxAdmin.setEditable(false);
@@ -62,7 +68,7 @@ public class AdminPanel {
 
         staffFirstName.setEditable(false);
         staffLastName.setEditable(false);
-        DOBTextField.setEditable(false);
+        dobDatePickerStaff.setDisable(true);
         positionTextField.setEditable(false);
         staffNotes.setEditable(false);
         saveStaff.setDisable(true);
@@ -309,13 +315,7 @@ public class AdminPanel {
     public void onSearchStaff(ActionEvent event) {
         String id = staffIDTextField.getText();
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            // Check if the staff ID exists in the users table as a foreign key
-            String checkUserSql = "SELECT * FROM users WHERE staff_id = ?";
-            PreparedStatement checkUserStatement = connection.prepareStatement(checkUserSql);
-            checkUserStatement.setString(1, id);
-            ResultSet userResultSet = checkUserStatement.executeQuery();
-            boolean userExists = userResultSet.next();
-
+            // Check if the staff ID exists in the hospital_staff table
             String selectStaffSql = "SELECT * FROM hospital_staff WHERE staff_id = ?";
             PreparedStatement selectStaffStatement = connection.prepareStatement(selectStaffSql);
             selectStaffStatement.setString(1, id);
@@ -324,26 +324,26 @@ public class AdminPanel {
             if (resultSet.next()) {
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
-                String dob = resultSet.getString("DOB");
+                Date dob = resultSet.getDate("DOB");
                 String position = resultSet.getString("position");
                 String notes = resultSet.getString("notes");
 
                 staffFirstName.setText(firstName);
                 staffLastName.setText(lastName);
-                dobTextFieldStaff.setText(dob);
+                dobDatePickerStaff.setValue(dob.toLocalDate());
                 positionTextField.setText(position);
                 staffNotes.setText(notes);
 
                 staffFirstName.setEditable(true);
                 staffLastName.setEditable(true);
-                dobTextFieldStaff.setEditable(true);
+                dobDatePickerStaff.setDisable(false);
                 positionTextField.setEditable(true);
                 staffNotes.setEditable(true);
 
                 saveStaff.setDisable(false);
                 deleteStaff.setDisable(false);
                 clearStaff.setDisable(false);
-                generateUser.setDisable(userExists); // Disable Generate User button if user exists
+                generateUser.setDisable(false);
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Staff Member Not Found");
@@ -353,10 +353,11 @@ public class AdminPanel {
                 ButtonType createNewStaffButton = new ButtonType("Create New Staff");
                 ButtonType cancelButton = new ButtonType("Cancel");
                 alert.getButtonTypes().setAll(createNewStaffButton, cancelButton);
+                isNewStaffMember = true;
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == createNewStaffButton) {
-                    clearFieldsStaff();
+                    createNewStaff(); // Call the method to create a new staff member
                 } else {
                     clearFieldsStaff();
                 }
@@ -365,6 +366,46 @@ public class AdminPanel {
             e.printStackTrace();
         }
     }
+
+    private String generateNewStaffID() {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "SELECT staff_id FROM hospital_staff ORDER BY staff_id DESC LIMIT 1";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            if (resultSet.next()) {
+                int lastID = resultSet.getInt("staff_id");
+                return String.valueOf(lastID + 1);
+            } else {
+                return "1";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+
+    public void createNewStaff() {
+        // Generate a new ID for the staff member
+        String id = generateNewStaffID();
+
+        // Enable the necessary fields for the user to set the values
+        staffFirstName.setEditable(true);
+        staffLastName.setEditable(true);
+        dobDatePickerStaff.setDisable(false);
+        positionTextField.setEditable(true);
+        staffNotes.setEditable(true);
+
+        // Set the generated ID
+        staffIDTextField.setText(id);
+
+        // Disable the Generate User button
+        generateUser.setDisable(false);
+        saveStaff.setDisable(false);
+
+    }
+
     @FXML
     private void insertStaffData(String id, String firstName, String lastName, String dob, String position, String notes) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
@@ -402,25 +443,27 @@ public class AdminPanel {
         String id = staffIDTextField.getText();
         String firstName = staffFirstName.getText();
         String lastName = staffLastName.getText();
-        String dob = dobTextFieldStaff.getText();
+        String dob = String.valueOf(dobDatePickerStaff.getValue());
         String position = positionTextField.getText();
         String notes = staffNotes.getText();
 
         if (isNewStaffMember) {
             insertStaffData(id, firstName, lastName, dob, position, notes);
         } else {
-            updateStaffData(id, firstName, lastName, dob, position, notes);
+            updateStaffData(id, firstName, lastName, LocalDate.parse(dob), position, notes);
         }
+        clearStaff.setDisable(false);
+
     }
 
     @FXML
-    private void updateStaffData(String id, String firstName, String lastName, String dob, String position, String notes) {
+    private void updateStaffData(String id, String firstName, String lastName, LocalDate dob, String position, String notes) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             String sql = "UPDATE hospital_staff SET first_name = ?, last_name = ?, DOB = ?, position = ?, notes = ? WHERE staff_id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
-            statement.setString(3, dob);
+            statement.setDate(3, Date.valueOf(dob));
             statement.setString(4, position);
             statement.setString(5, notes);
             statement.setString(6, id);
@@ -445,12 +488,13 @@ public class AdminPanel {
         }
     }
 
+
     @FXML
     private void clearFieldsStaff() {
         staffIDTextField.clear();
         staffFirstName.clear();
         staffLastName.clear();
-        dobTextFieldStaff.clear();
+        dobDatePickerStaff.setValue(null);
         positionTextField.clear();
         staffNotes.clear();
     }
@@ -468,7 +512,7 @@ public class AdminPanel {
             statement.setString(1, generatedUsername);
             statement.setString(2, generatedPassword);
             statement.setString(3, positionTextField.getText());
-            statement.setString(4, "false"); // assuming admin is always false for new staff members
+            statement.setString(4, String.valueOf(0)); // assuming admin is always false for new staff members
             statement.setString(5, staffIDTextField.getText());
 
             int rowsAffected = statement.executeUpdate();
@@ -557,7 +601,7 @@ public class AdminPanel {
     }
 
     public void onDeleteStaff(ActionEvent event) {
-        String id = adminIDTextField.getText();
+        String id = staffIDTextField.getText();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm Delete");
@@ -567,22 +611,20 @@ public class AdminPanel {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try (Connection connection = DriverManager.getConnection(url, username, password)) {
-                connection.setAutoCommit(false); // Disable auto-commit
-
-                // Delete staff from staff_information table
-                String deleteStaffSql = "DELETE FROM staff_information WHERE id = ?";
-                PreparedStatement deleteStaffStatement = connection.prepareStatement(deleteStaffSql);
-                deleteStaffStatement.setString(1, id);
-                int staffRowsAffected = deleteStaffStatement.executeUpdate();
-
-                // Delete staff from users table if they exist
-                String deleteUserSql = "DELETE FROM users WHERE id = ?";
+                // Delete staff from users table
+                String deleteUserSql = "DELETE FROM users WHERE staff_id = ?";
                 PreparedStatement deleteUserStatement = connection.prepareStatement(deleteUserSql);
                 deleteUserStatement.setString(1, id);
                 int userRowsAffected = deleteUserStatement.executeUpdate();
 
-                if (staffRowsAffected > 0 && userRowsAffected > 0) {
-                    connection.commit(); // Commit the transaction
+                // Delete staff from hospital_staff table
+                String deleteStaffSql = "DELETE FROM hospital_staff WHERE staff_id = ?";
+                PreparedStatement deleteStaffStatement = connection.prepareStatement(deleteStaffSql);
+                deleteStaffStatement.setString(1, id);
+                int staffRowsAffected = deleteStaffStatement.executeUpdate();
+                System.out.println("ID to delete: " + id);
+
+                if (userRowsAffected > 0 && staffRowsAffected > 0) {
                     Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
                     successAlert.setTitle("Success");
                     successAlert.setHeaderText(null);
@@ -590,15 +632,12 @@ public class AdminPanel {
                     successAlert.showAndWait();
                     clearFieldsStaff();
                 } else {
-                    connection.rollback(); // Rollback the transaction
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setTitle("Error");
                     errorAlert.setHeaderText(null);
                     errorAlert.setContentText("Failed to delete staff member.");
                     errorAlert.showAndWait();
                 }
-
-                connection.setAutoCommit(true); // Enable auto-commit
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -608,11 +647,12 @@ public class AdminPanel {
 
 
 
+
     public void clearFieldsStaff(ActionEvent event) {
         staffIDTextField.clear();
         staffFirstName.clear();
         staffLastName.clear();
-        dobTextFieldStaff.clear();
+        dobDatePickerStaff.setValue(null);
         positionTextField.clear();
         staffNotes.clear();
 
