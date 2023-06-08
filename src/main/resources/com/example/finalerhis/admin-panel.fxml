@@ -108,7 +108,7 @@
                                     <TextField fx:id="genderTextField" layoutX="120.0" layoutY="137.0" prefWidth="120.0" />
                                     <TextField fx:id="allergiesTextField" layoutX="120.0" layoutY="170.0" prefWidth="120.0" />
                                     <Label layoutX="14.0" layoutY="174.0" text="Allergies:" />
-                                    <Button fx:id="clearPatient" layoutX="327.0" layoutY="374.0" onAction="#clearFields" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Clear" />
+                                    <Button fx:id="clearPatient" layoutX="327.0" layoutY="374.0" onAction="#clearPatientsFields" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Clear" />
                                             </children>
                                         </AnchorPane>
                                     </content>
@@ -128,11 +128,12 @@
                                                 <Label layoutX="14.0" layoutY="134.0" text="Position:" />
                                                 <TextField fx:id="positionTextField" layoutX="120.0" layoutY="130.0" prefWidth="120.0" />
                                     <Button fx:id="searchStaff" layoutX="14.0" layoutY="374.0" onAction="#onSearchStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Search" />
-                                    <Button fx:id="saveStaff" layoutX="120.0" layoutY="374.0" onAction="#onSaveStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Save" />
-                                    <Button fx:id="deleteStaff" layoutX="225.0" layoutY="374.0" onAction="#onDeleteStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Delete" />
+                                    <Button fx:id="saveStaff" layoutX="111.0" layoutY="374.0" onAction="#onSaveStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Save" />
+                                    <Button fx:id="deleteStaff" layoutX="206.0" layoutY="374.0" onAction="#onDeleteStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Delete" />
                                     <TextArea fx:id="staffNotes" layoutX="120.0" layoutY="158.0" prefHeight="80.0" prefWidth="240.0" />
                                     <Label layoutX="14.0" layoutY="158.0" text="Notes:" />
-                                    <Button fx:id="clearStaff" layoutX="328.0" layoutY="374.0" onAction="#clearFieldsStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Clear" />
+                                    <Button fx:id="clearStaff" layoutX="302.0" layoutY="374.0" onAction="#clearFieldsStaff" prefHeight="41.0" prefWidth="80.0" styleClass="button-default" text="Clear" />
+                                    <Button fx:id="generateUser" layoutX="401.0" layoutY="374.0" onAction="#generateUser" prefHeight="41.0" prefWidth="109.0" styleClass="button-default" text="Generate User" />
                                             </children>
                                         </AnchorPane>
                                     </content>
