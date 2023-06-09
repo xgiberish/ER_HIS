@@ -102,7 +102,7 @@ public class PatientRegular1 {
 
 
     @FXML
-    private void onAddMedication(ActionEvent event) {
+    void onAddMedication(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("add-medication.fxml"));
             Parent root = fxmlLoader.load();
@@ -221,7 +221,7 @@ public class PatientRegular1 {
     }
 
     @FXML
-    private void insertPatientData(String id, String name, String diagnosis, String age, String gender, String allergies, String triage, String treatment, String time, LocalDate admission_date) {
+    void insertPatientData(String id, String name, String diagnosis, String age, String gender, String allergies, String triage, String treatment, String time, LocalDate admission_date) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             String sql = "INSERT INTO patient_information (id, full_name, age, gender, allergies, time, triage, diagnosis, treatment, admission_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -257,7 +257,7 @@ public class PatientRegular1 {
     }
 
     @FXML
-    private void updatePatientData(String id, String name, String diagnosis, String age, String gender, String allergies, String triage, String treatment, String time, LocalDate admission_date) {
+    void updatePatientData(String id, String name, String diagnosis, String age, String gender, String allergies, String triage, String treatment, String time, LocalDate admission_date) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             String sql = "UPDATE patient_information SET full_name = ?, age = ?, gender = ?, allergies = ?, time = ?, triage = ?, diagnosis = ?, treatment = ?, admission_date = ? WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -316,7 +316,7 @@ public class PatientRegular1 {
         dischargeButton.setDisable(false);
 
     }
-    private void updateRoomsTable(int roomNumber, String patientID) {
+    void updateRoomsTable(int roomNumber, String patientID) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             String sqlCheckRoom = "SELECT COUNT(*) FROM rooms WHERE room_number = ?";
             PreparedStatement checkRoomStatement = connection.prepareStatement(sqlCheckRoom);
@@ -358,10 +358,10 @@ public class PatientRegular1 {
 
 
     @FXML
-    private void onDischargeButtonClicked() {
+    void onDischargeButtonClicked() {
         clearFields();
         dischargeButton.setDisable(true);
-        updateRoomPatientId(1);
+        updateRoomPatientId(roomNumber);
 
         idField.setEditable(false);
         nameField.setEditable(false);
@@ -371,7 +371,7 @@ public class PatientRegular1 {
         allergiesField.setEditable(false);
     }
 
-    private void updateRoomPatientId(int roomNumber) {
+    void updateRoomPatientId(int roomNumber) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             String sql = "UPDATE rooms SET patient_id = NULL WHERE room_number = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -445,28 +445,6 @@ public class PatientRegular1 {
             e.printStackTrace();
         }
     }
-
-    private String fetchTreatmentFromDatabase() {
-        String patientIdValue = getPatientID(); // Replace with the method to get the patient ID
-        String treatment = "";
-
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(
-                     "SELECT treatment FROM user_information WHERE id = ?")) {
-
-            statement.setString(1, patientIdValue);
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                treatment = resultSet.getString("treatment");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return treatment;
-    }
-
 
 
 

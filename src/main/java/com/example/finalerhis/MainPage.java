@@ -75,8 +75,30 @@ public class MainPage {
 
     @FXML
     private void openPatientInformation2(ActionEvent event) {
-        openPatientInformation("patient-regular2.fxml", "Regular Room 2");
-    }
+        Parent root = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("patient-regular2.fxml"));
+            root = loader.load();
+
+            // Retrieve patient ID from the rooms table
+            String patientID = getPatientIDFromRoomNumber(2); // Replace 1 with the actual room number
+
+            if (patientID != null) {
+                // If patient ID is present, fill out the information
+                PatientRegular2 patientInfoController = loader.getController();
+                patientInfoController.fillFieldsWithPatientData2(patientID);
+            } else {
+                // If no patient ID is present, display a message
+                PatientRegular2 patientInfoController = loader.getController();
+                patientInfoController.displayEmptyRoomMessage();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Stage newStage = new Stage(); // Create a new Stage instance
+        newStage.setScene(new Scene(root));
+        newStage.setTitle("Regular Room 2");
+        newStage.show();    }
 
     @FXML
     private void openPatientInformation3(ActionEvent event) {
