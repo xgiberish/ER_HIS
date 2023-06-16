@@ -28,6 +28,8 @@ public class AddMedication {
 
     private PatientRegular1 patientInformationController;
 
+    private PatientRegular2 patientInformation2Controller;
+
 
     @FXML
     private ListView<String> medicationListView;
@@ -35,13 +37,12 @@ public class AddMedication {
     private String jdbcUrl = "jdbc:mysql://localhost:3306/hospital_users";
     private String username = "root";
     private String password = "";
-    private List<String> allMedications; // Store all medications fetched from the database
+    private List<String> allMedications;
 
     public AddMedication() {
     }
 
     public void loadPatientInformation(String patientName, String patientID) {
-        // Set the retrieved information to the text fields
         this.patientName.setText(patientName);
         this.patientID.setText(patientID);
     }
@@ -91,6 +92,9 @@ public class AddMedication {
                     if (patientInformationController != null) {
                         patientInformationController.updateTreatment(fetchTreatmentFromDatabase());
                     }
+                    if (patientInformation2Controller != null) {
+                        patientInformation2Controller.updateTreatment(fetchTreatmentFromDatabase());
+                    }
                 } else {
                     showAlert(Alert.AlertType.ERROR, "Medication Addition Failed", "Failed to add medication!");
                 }
@@ -139,6 +143,10 @@ public class AddMedication {
     }
     public void setPatientInformationController(PatientRegular1 patientInformationController) {
         this.patientInformationController = patientInformationController;
+    }
+
+    public void setPatientInformationController2(PatientRegular2 patientInformation2Controller) {
+        this.patientInformation2Controller = patientInformation2Controller;
     }
 
 

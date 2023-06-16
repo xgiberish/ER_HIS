@@ -60,7 +60,6 @@ public class PatientRegular1 {
     String username = "root";
     String password = "";
 
-    private Stage stage;
     int roomNumber = 1;
 
     boolean isNewPatient = false;

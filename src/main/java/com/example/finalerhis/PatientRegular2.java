@@ -3,11 +3,17 @@ package com.example.finalerhis;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -36,7 +42,7 @@ public class PatientRegular2 {
 
     int roomNumber = 2;
     boolean isNewPatient = false;
-    private PatientRegular1 patientRegular1Controller;
+    PatientRegular1 patientRegular1Controller;
     String url = "jdbc:mysql://localhost:3306/hospital_users";
     String username = "root";
     String password = "";
@@ -66,7 +72,6 @@ public class PatientRegular2 {
         String selectedColor = triageComboBox2.getValue();
         List<Stop> stops = triageGradient.getStops();
 
-        // Update the fill color of the circle based on the selected value
         switch (selectedColor) {
             case "white" -> triageCircle.setFill(stops.get(5).getColor());
             case "blue" -> triageCircle.setFill(stops.get(4).getColor());
@@ -75,14 +80,24 @@ public class PatientRegular2 {
             case "red" -> triageCircle.setFill(stops.get(1).getColor());
         }
     }
-    public void setPatientRegular1Controller(PatientRegular1 controller) {
-        this.patientRegular1Controller = controller;
-    }
-
     @FXML
-    private void onAddMedication2(ActionEvent event) {
-        if (patientRegular1Controller != null) {
-            patientRegular1Controller.onAddMedication(event);
+    void onAddMedication2(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("add-medication.fxml"));
+            Parent root = fxmlLoader.load();
+            AddMedication addMedicationController2 = fxmlLoader.getController();
+            addMedicationController2.setPatientInformationController2(this);
+
+            AddMedication addMedicationController = fxmlLoader.getController();
+            addMedicationController.loadPatientInformation(getPatientName(), getPatientID());
+
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.setTitle("Add Medication");
+            popupStage.setScene(new Scene(root));
+            popupStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     @FXML
@@ -319,5 +334,16 @@ public class PatientRegular2 {
         alert.setContentText("The room is empty.");
 
         alert.showAndWait();
+    }
+    public void updateTreatment(String newTreatment) {
+        // Update the treatment field with the new treatment value
+        treatmentField2.setText(newTreatment);
+    }
+    public String getPatientName() {
+        return nameField2.getText();
+    }
+
+    public String getPatientID() {
+        return idField2.getText();
     }
 }
