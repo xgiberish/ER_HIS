@@ -286,24 +286,54 @@ public class AdminPanel {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try (Connection connection = DriverManager.getConnection(url, username, password)) {
-                String sql = "DELETE FROM patient_information WHERE id = ?";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, id);
+                // Retrieve the patient information
+                String selectSql = "SELECT * FROM patient_information WHERE id = ?";
+                PreparedStatement selectStatement = connection.prepareStatement(selectSql);
+                selectStatement.setString(1, id);
+                ResultSet resultSet = selectStatement.executeQuery();
 
-                int rowsAffected = statement.executeUpdate();
+                if (resultSet.next()) {
+                    // Insert the patient information into the deleted_patients table
+                    String insertSql = "INSERT INTO deleted_patients (id, full_name, age, gender, allergies, admission_date, time, triage, diagnosis, treatment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement insertStatement = connection.prepareStatement(insertSql);
+                    insertStatement.setString(1, resultSet.getString("id"));
+                    insertStatement.setString(2, resultSet.getString("full_name"));
+                    insertStatement.setInt(3, resultSet.getInt("age"));
+                    insertStatement.setString(4, resultSet.getString("gender"));
+                    insertStatement.setString(5, resultSet.getString("allergies"));
+                    insertStatement.setDate(6, resultSet.getDate("admission_date"));
+                    insertStatement.setTime(7, resultSet.getTime("time"));
+                    insertStatement.setString(8, resultSet.getString("triage"));
+                    insertStatement.setString(9, resultSet.getString("diagnosis"));
+                    insertStatement.setString(10, resultSet.getString("treatment"));
 
-                if (rowsAffected > 0) {
-                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                    successAlert.setTitle("Success");
-                    successAlert.setHeaderText(null);
-                    successAlert.setContentText("Patient deleted successfully.");
-                    successAlert.showAndWait();
-                    clearPatientsFields();
+                    int rowsAffected = insertStatement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        // Delete the patient from the patient_information table
+                        String deleteSql = "DELETE FROM patient_information WHERE id = ?";
+                        PreparedStatement deleteStatement = connection.prepareStatement(deleteSql);
+                        deleteStatement.setString(1, id);
+                        deleteStatement.executeUpdate();
+
+                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                        successAlert.setTitle("Success");
+                        successAlert.setHeaderText(null);
+                        successAlert.setContentText("Patient deleted successfully.");
+                        successAlert.showAndWait();
+                        clearPatientsFields();
+                    } else {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setTitle("Error");
+                        errorAlert.setHeaderText(null);
+                        errorAlert.setContentText("Failed to delete patient.");
+                        errorAlert.showAndWait();
+                    }
                 } else {
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setTitle("Error");
                     errorAlert.setHeaderText(null);
-                    errorAlert.setContentText("Failed to delete patient.");
+                    errorAlert.setContentText("Patient not found.");
                     errorAlert.showAndWait();
                 }
             } catch (SQLException e) {
@@ -311,6 +341,7 @@ public class AdminPanel {
             }
         }
     }
+
     //////Start of staff panel
     public void onSearchStaff(ActionEvent event) {
         String id = staffIDTextField.getText();

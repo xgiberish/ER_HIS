@@ -68,7 +68,7 @@
                                 <Font size="24.0" />
                             </font>
                         </Label>
-                        <Button fx:id="logoutButton" layoutX="155.0" layoutY="31.0" minHeight="39.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="39.0" prefWidth="89.0" styleClass="button-default" text="Logout" textFill="#c6c6c6" />
+                        <Button fx:id="logoutButton" layoutX="175.0" layoutY="31.0" minHeight="39.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="39.0" prefWidth="89.0" styleClass="button-default" text="Logout" textFill="#c6c6c6" />
                     </children>
                 </Pane>
                 <Accordion prefHeight="419.0" prefWidth="261.0">
@@ -134,10 +134,10 @@
                                 <Font size="18.0" />
                             </font>
                         </TitledPane>
-                        <TitledPane fx:id="patientViewPane" animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" onMouseClicked="#toggleTitledPane" prefHeight="281.0" prefWidth="230.0" text="Patient View">
+                        <TitledPane fx:id="patientViewPane" animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="281.0" prefWidth="230.0" text="Patient View">
                             <content>
                                 <VBox spacing="10">
-                                    <TableView>
+                                    <TableView fx:id="patientView">
                                         <columns>
                                             <TableColumn fx:id="idColumn" prefWidth="60.0" text="ID" />
                                             <TableColumn fx:id="nameColumn" prefWidth="112.0" text="Name" />
@@ -154,7 +154,7 @@
                         <TitledPane fx:id="waitingRoomPane" animated="false" onMouseClicked="#toggleTitledPane" prefHeight="275.0" prefWidth="230.0" text="Waiting Room">
                             <content>
                                 <VBox prefHeight="264.0" prefWidth="245.0" spacing="10">
-                                    <TableView prefHeight="254.0" prefWidth="208.0">
+                                    <TableView fx:id="waitingRoom" prefHeight="254.0" prefWidth="208.0">
                                         <columns>
                                             <TableColumn prefWidth="94.0" text="Name" />
                                             <TableColumn prefWidth="76.0" text="Wait" />

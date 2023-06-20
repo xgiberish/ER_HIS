@@ -1,12 +1,14 @@
 package com.example.finalerhis;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,14 +19,23 @@ public class MainPage {
     public TitledPane patientViewPane;
     public TitledPane intensiveRoomsPane;
     public Button logoutButton;
-    private Stage stage; // Declare the stage variable
+    public TableView<ObservableList<String>> patientView;
+    public TableView waitingRoom;
+    public TableColumn<Object, Object> idColumn;
+    public TableColumn<Object, Object> nameColumn;
+    public TableColumn<Object, Object> triageColumn;
+
     String url = "jdbc:mysql://localhost:3306/hospital_users";
-    String username = "root";
+    String usernameDB = "root";
     String password = "";
 
     public void setStage(Stage stage) {
-        this.stage = stage;
+        // Declare the stage variable
     }
+    @FXML
+    public void initialize(){
+    }
+
 
     @FXML
     private void openPatientInformation1(ActionEvent event) {
@@ -55,7 +66,7 @@ public class MainPage {
     }
 
     private String getPatientIDFromRoomNumber(int roomNumber) {
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+        try (Connection connection = DriverManager.getConnection(url, usernameDB, password)) {
             String sql = "SELECT patient_Id FROM rooms WHERE room_number = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, roomNumber);

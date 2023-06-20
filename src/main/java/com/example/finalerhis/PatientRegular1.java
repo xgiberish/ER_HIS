@@ -1,5 +1,7 @@
 package com.example.finalerhis;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +25,12 @@ import java.util.Optional;
 
 public class PatientRegular1 {
     public TextField timeTextField;
+    public ListView<String> laboratoryTests;
+    public Button addLab;
+    
+    public ListView<String> xrayOrders;
+    public Tab xrayTab;
+    public Tab laboratoryTab;
     @FXML
     private Button waitingRoomButton;
     @FXML
@@ -63,11 +71,17 @@ public class PatientRegular1 {
     int roomNumber = 1;
 
     boolean isNewPatient = false;
+    String position = UserSession.getPosition();
+
+
+    public PatientRegular1() {
+    }
+
 
     @FXML
     private void initialize() {
         idField.setEditable(true);
-        nameField.setEditable(false);
+        nameField.setEditable(true);
         diagnosisField.setEditable(false);
         ageField.setEditable(false);
         genderField.setEditable(false);
@@ -82,6 +96,64 @@ public class PatientRegular1 {
         timeTextField.setText(currentTime);
 
         triageComboBox.setOnAction(this::onTriageComboBoxAction);
+        populateLabs();
+        populateXRayOrders();
+        if (position.equals("RN")) {
+            // Disable the laboratory and X-ray tabs
+            laboratoryTab.setDisable(true);
+            xrayTab.setDisable(true);
+        }
+
+    }
+    private void populateXRayOrders() {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "SELECT id, order_name FROM x_ray";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            ObservableList<String> orders = FXCollections.observableArrayList();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("id");
+                String orderName = resultSet.getString("order_name");
+                String order = id + ": " + orderName;
+                orders.add(order);
+            }
+
+            xrayOrders.setItems(orders);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    public void populateLabs(){
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            // Create a query to retrieve the id and test_name from the blood_tests table
+            String sql = "SELECT id, test_name FROM blood_test";
+
+            // Prepare the statement
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            // Execute the query and retrieve the result set
+            ResultSet resultSet = statement.executeQuery();
+
+            // Create an ObservableList to store the data for the ListView
+            ObservableList<String> testNames = FXCollections.observableArrayList();
+
+            // Iterate through the result set and add id and test_name values to the ObservableList
+            while (resultSet.next()) {
+                String id = resultSet.getString("id");
+                String testName = resultSet.getString("test_name");
+                String listItem = id + " - " + testName;
+                testNames.add(listItem);
+            }
+
+            // Set the items of the ListView to the ObservableList
+            laboratoryTests.setItems(testNames);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     @FXML
     private void onTriageComboBoxAction(ActionEvent event) {
@@ -125,15 +197,28 @@ public class PatientRegular1 {
 
     @FXML
     private void onSearchButtonClicked() {
+        diagnosisField.clear();
+        ageField.clear();
+        genderField.clear();
+        allergiesField.clear();
+        admissionDateField.clear();
+        triageComboBox.setValue("white");
+        treatmentField.clear();
+
         String id = idField.getText();
+        String name = nameField.getText();
+
+
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "SELECT * FROM patient_information WHERE id = ?";
+            String sql = "SELECT * FROM patient_information WHERE id = ? OR full_name = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, id);
+            statement.setString(2, name);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                String name = resultSet.getString("full_name");
+                // Existing patient found, retrieve values from the result set
+                id = resultSet.getString("id");
                 String diagnosis = resultSet.getString("diagnosis");
                 String age = resultSet.getString("age");
                 String gender = resultSet.getString("gender");
@@ -142,8 +227,9 @@ public class PatientRegular1 {
                 String triage = resultSet.getString("triage");
                 String treatment = resultSet.getString("treatment");
 
-
-                nameField.setText(name);
+                // Set the values in the respective text fields
+                idField.setText(id);
+                nameField.setText(resultSet.getString("full_name"));
                 diagnosisField.setText(diagnosis);
                 ageField.setText(age);
                 genderField.setText(gender);
@@ -152,10 +238,11 @@ public class PatientRegular1 {
                 triageComboBox.setValue(triage);
                 treatmentField.setText(treatment);
 
+                // Enable/disable appropriate buttons and fields
                 admitButton.setDisable(false);
                 addMedication.setDisable(false);
                 waitingRoomButton.setDisable(false);
-                nameField.setEditable(true);
+                nameField.setEditable(false);
                 diagnosisField.setEditable(true);
                 ageField.setEditable(true);
                 genderField.setEditable(true);
@@ -165,10 +252,11 @@ public class PatientRegular1 {
                 treatmentField.setEditable(true);
                 dischargeButton.setDisable(true);
             } else {
-                Alert alert = new Alert(AlertType.ERROR);
+                // Patient not found, offer to create a new patient
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Patient Not Found");
                 alert.setHeaderText(null);
-                alert.setContentText("Patient with ID " + id + " not found.");
+                alert.setContentText("Patient with ID " + id + " or name " + name + " not found.");
 
                 ButtonType createNewPatientButton = new ButtonType("Create New Patient");
                 ButtonType cancelButton = new ButtonType("Cancel");
@@ -176,6 +264,8 @@ public class PatientRegular1 {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == createNewPatientButton) {
+                    // Clear the fields and set them for creating a new patient
+                    clearFields();
                     idField.setEditable(false);
                     idField.setText(generateNewPatientID());
 
@@ -192,8 +282,6 @@ public class PatientRegular1 {
                     addMedication.setDisable(false);
                     waitingRoomButton.setDisable(false);
                     isNewPatient = true;
-                } else {
-                    clearFields();
                 }
             }
         } catch (SQLException e) {
@@ -201,14 +289,16 @@ public class PatientRegular1 {
         }
     }
 
-    private String generateNewPatientID() {
+
+
+    public String generateNewPatientID() {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "SELECT id FROM patient_information ORDER BY id DESC LIMIT 1";
+            String sql = "SELECT MAX(id) AS max_id FROM patient_information";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 
             if (resultSet.next()) {
-                int lastID = resultSet.getInt("id");
+                int lastID = resultSet.getInt("max_id");
                 return String.valueOf(lastID + 1);
             } else {
                 return "1";
@@ -313,6 +403,9 @@ public class PatientRegular1 {
         }
         idField.setEditable(false);
         dischargeButton.setDisable(false);
+        nameField.setEditable(false);
+        searchButton.setDisable(true);
+        waitingRoomButton.setDisable(true);
 
     }
     void updateRoomsTable(int roomNumber, String patientID) {
@@ -360,11 +453,14 @@ public class PatientRegular1 {
     void onDischargeButtonClicked() {
         clearFields();
         dischargeButton.setDisable(true);
+        addMedication.setDisable(true);
+        waitingRoomButton.setDisable(true);
         updateRoomPatientId(roomNumber);
 
-        idField.setEditable(false);
-        nameField.setEditable(false);
+        idField.setEditable(true);
+        nameField.setEditable(true);
         diagnosisField.setEditable(false);
+        admitButton.setDisable(true);
         ageField.setEditable(false);
         genderField.setEditable(false);
         allergiesField.setEditable(false);
@@ -455,7 +551,7 @@ public class PatientRegular1 {
         genderField.clear();
         allergiesField.clear();
         admissionDateField.clear();
-        triageComboBox.setValue(null);
+        triageComboBox.setValue("white");
         treatmentField.clear();
     }
 

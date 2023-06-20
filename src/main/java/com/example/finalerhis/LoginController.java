@@ -3,6 +3,7 @@ package com.example.finalerhis;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -28,6 +29,9 @@ public class LoginController {
     private PasswordField passwordField;
 
     private Stage stage;
+    String url = "jdbc:mysql://localhost:3306/hospital_users";
+    String dbUsername = "root";
+    String dbPassword = "";
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -38,10 +42,6 @@ public class LoginController {
         String username = usernameTextArea.getText();
         String password = passwordField.getText();
 
-        // Replace with your database connection details
-        String url = "jdbc:mysql://localhost:3306/hospital_users";
-        String dbUsername = "root";
-        String dbPassword = "";
 
         try (Connection connection = DriverManager.getConnection(url, dbUsername, dbPassword)) {
             // Prepare the SQL statement
@@ -56,9 +56,12 @@ public class LoginController {
             if (resultSet.next()) {
                 // Successful login
                 System.out.println("Login successful!");
-
                 // Check if the user is an admin
                 boolean isAdmin = resultSet.getBoolean("admin");
+                String userPosition = resultSet.getString("position");
+
+                // Set user position in UserSession
+                UserSession.setPosition(userPosition);
 
                 FXMLLoader fxmlLoader;
                 if (isAdmin) {
@@ -79,6 +82,50 @@ public class LoginController {
             throw new RuntimeException(e);
         }
     }
+    public String getUserPosition(String username) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String position = null;
+
+        try {
+            // Establish a database connection
+            conn = DriverManager.getConnection(url, dbUsername,dbPassword);
+
+            // Prepare the SQL statement
+            String sql = "SELECT position FROM users WHERE username = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, username);
+
+            // Execute the query
+            rs = stmt.executeQuery();
+
+            // Retrieve the position from the result set
+            if (rs.next()) {
+                position = rs.getString("position");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close the database resources
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return position;
+    }
+
     private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Invalid credentials");

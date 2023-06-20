@@ -47,11 +47,12 @@ public class PatientRegular2 {
     String username = "root";
     String password = "";
 
+    public PatientRegular2() {
+    }
 
     @FXML
     private void initialize(){
         idField2.setEditable(true);
-        nameField2.setEditable(false);
         diagnosisField2.setEditable(false);
         ageField2.setEditable(false);
         genderField2.setEditable(false);
@@ -103,14 +104,25 @@ public class PatientRegular2 {
     @FXML
     private void onSearchButtonClicked2() {
         String id = idField2.getText();
+        String name = nameField2.getText();
+        diagnosisField2.clear();
+        ageField2.clear();
+        genderField2.clear();
+        allergiesField2.clear();
+        admissionDateField2.clear();
+        triageComboBox2.setValue("white");
+        treatmentField2.clear();
+
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "SELECT * FROM patient_information WHERE id = ?";
+            String sql = "SELECT * FROM patient_information WHERE id = ? OR full_name = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, id);
+            statement.setString(2, name);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                String name = resultSet.getString("full_name");
+                // Retrieve the values from the result set
+                id = resultSet.getString("id");
                 String diagnosis = resultSet.getString("diagnosis");
                 String age = resultSet.getString("age");
                 String gender = resultSet.getString("gender");
@@ -119,8 +131,9 @@ public class PatientRegular2 {
                 String triage = resultSet.getString("triage");
                 String treatment = resultSet.getString("treatment");
 
-
-                nameField2.setText(name);
+                // Set the values in the respective text fields
+                idField2.setText(id);
+                nameField2.setText(resultSet.getString("full_name"));
                 diagnosisField2.setText(diagnosis);
                 ageField2.setText(age);
                 genderField2.setText(gender);
@@ -129,6 +142,7 @@ public class PatientRegular2 {
                 triageComboBox2.setValue(triage);
                 treatmentField2.setText(treatment);
 
+                // Enable/disable appropriate buttons and fields
                 admitButton2.setDisable(false);
                 addMedication2.setDisable(false);
                 waitingRoomButton2.setDisable(false);
@@ -142,10 +156,11 @@ public class PatientRegular2 {
                 treatmentField2.setEditable(true);
                 dischargeButton2.setDisable(true);
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
+                // Display an error message if the patient is not found
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Patient Not Found");
                 alert.setHeaderText(null);
-                alert.setContentText("Patient with ID " + id + " not found.");
+                alert.setContentText("Patient with ID " + id + " or name " + name + " not found.");
 
                 ButtonType createNewPatientButton = new ButtonType("Create New Patient");
                 ButtonType cancelButton = new ButtonType("Cancel");
@@ -153,8 +168,9 @@ public class PatientRegular2 {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == createNewPatientButton) {
+                    // Set fields for creating a new patient
                     idField2.setEditable(false);
-                    idField2.setText(patientRegular1Controller.getPatientID());
+                    idField2.setText(patientRegular1Controller.generateNewPatientID());
 
                     nameField2.setEditable(true);
                     diagnosisField2.setEditable(true);
@@ -169,8 +185,6 @@ public class PatientRegular2 {
                     addMedication2.setDisable(false);
                     waitingRoomButton2.setDisable(false);
                     isNewPatient = true;
-                } else {
-                    clearFields();
                 }
             }
         } catch (SQLException e) {
@@ -297,6 +311,8 @@ public class PatientRegular2 {
     public void onDischargeButtonClicked2(ActionEvent event) {
         clearFields();
         dischargeButton2.setDisable(true);
+        addMedication2.setDisable(true);
+        waitingRoomButton2.setDisable(true);
         patientRegular1Controller.updateRoomPatientId(roomNumber);
 
         idField2.setEditable(false);
@@ -315,7 +331,7 @@ public class PatientRegular2 {
         genderField2.clear();
         allergiesField2.clear();
         admissionDateField2.clear();
-        triageComboBox2.setValue(null);
+        triageComboBox2.setValue("white");
         treatmentField2.clear();
     }
 

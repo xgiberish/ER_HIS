@@ -103,7 +103,7 @@
                                     <font>
                                         <Font size="14.0" />
                                     </font></Text>
-                                <Text fill="#c6c6c6" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" GridPane.rowIndex="1">
+                                <Text fill="#c6c6c6" strokeType="OUTSIDE" strokeWidth="0.0" text="Full Name::" GridPane.rowIndex="1">
                                     <font>
                                         <Font size="14.0" />
                                     </font></Text>
