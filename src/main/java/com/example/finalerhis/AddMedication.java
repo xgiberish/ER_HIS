@@ -30,6 +30,14 @@ public class AddMedication {
 
     private PatientRegular2 patientInformation2Controller;
 
+    private PatientRegular3 patientInformation3Controller;
+
+    private PatientRegular4 patientInformation4Controller;
+
+    private PatientIcu1 patientInformation5Controller;
+
+    private PatientIcu2 patientInformation6Controller;
+
 
     @FXML
     private ListView<String> medicationListView;
@@ -95,6 +103,18 @@ public class AddMedication {
                     if (patientInformation2Controller != null) {
                         patientInformation2Controller.updateTreatment(fetchTreatmentFromDatabase());
                     }
+                    if (patientInformation3Controller !=null){
+                        patientInformation3Controller.updateTreatment(fetchTreatmentFromDatabase());
+                    }
+                    if (patientInformation4Controller !=null){
+                        patientInformation4Controller.updateTreatment(fetchTreatmentFromDatabase());
+                    }
+                    if (patientInformation5Controller !=null){
+                        patientInformation5Controller.updateTreatment(fetchTreatmentFromDatabase());
+                    }
+                    if (patientInformation6Controller !=null){
+                        patientInformation6Controller.updateTreatment(fetchTreatmentFromDatabase());
+                    }
                 } else {
                     showAlert(Alert.AlertType.ERROR, "Medication Addition Failed", "Failed to add medication!");
                 }
@@ -147,6 +167,21 @@ public class AddMedication {
 
     public void setPatientInformationController2(PatientRegular2 patientInformation2Controller) {
         this.patientInformation2Controller = patientInformation2Controller;
+    }
+
+    public void setPatientInformationController3(PatientRegular3 patientInformation3Controller) {
+        this.patientInformation3Controller = patientInformation3Controller;
+    }
+    public void setPatientInformationController4(PatientRegular4 patientInformation4Controller) {
+        this.patientInformation4Controller = patientInformation4Controller;
+    }
+
+    public void setPatientInformationController5(PatientIcu1 patientInformation5Controller) {
+        this.patientInformation5Controller = patientInformation5Controller;
+    }
+
+    public void setPatientInformationController6(PatientIcu2 patientInformation6Controller) {
+        this.patientInformation6Controller = patientInformation6Controller;
     }
 
 

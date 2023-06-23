@@ -27,7 +27,7 @@ public class PatientRegular1 {
     public TextField timeTextField;
     public ListView<String> laboratoryTests;
     public Button addLab;
-    
+
     public ListView<String> xrayOrders;
     public Tab xrayTab;
     public Tab laboratoryTab;
@@ -69,6 +69,7 @@ public class PatientRegular1 {
     String password = "";
 
     int roomNumber = 1;
+    MainPage mainPageController;
 
     boolean isNewPatient = false;
     String position = UserSession.getPosition();
@@ -394,7 +395,7 @@ public class PatientRegular1 {
         String treatment = treatmentField.getText();
         String time = timeTextField.getText();
         LocalDate admission_date = LocalDate.now();
-        updateRoomsTable(roomNumber, id);
+
 
         if (isNewPatient) {
             insertPatientData(id, name, diagnosis, age, gender, allergies, triage, treatment, time, admission_date);
@@ -406,6 +407,9 @@ public class PatientRegular1 {
         nameField.setEditable(false);
         searchButton.setDisable(true);
         waitingRoomButton.setDisable(true);
+        admitButton.setDisable(true);
+        updateRoomsTable(roomNumber, id);
+        mainPageController.fetchRoomDataFromDatabase();
 
     }
     void updateRoomsTable(int roomNumber, String patientID) {
@@ -416,14 +420,12 @@ public class PatientRegular1 {
             ResultSet resultSet = checkRoomStatement.executeQuery();
             resultSet.next();
             int roomCount = resultSet.getInt(1);
-
             if (roomCount > 0) {
                 String sqlUpdateRoom = "UPDATE rooms SET patient_id = ? WHERE room_number = ?";
                 PreparedStatement updateStatement = connection.prepareStatement(sqlUpdateRoom);
                 updateStatement.setString(1, patientID);
                 updateStatement.setInt(2, roomNumber);
                 int rowsAffected = updateStatement.executeUpdate();
-
                 if (rowsAffected > 0) {
                     showAlert(Alert.AlertType.INFORMATION, "Admission Success", "Patient admitted successfully.");
                 } else {
@@ -435,7 +437,6 @@ public class PatientRegular1 {
                 createStatement.setInt(1, roomNumber);
                 createStatement.setString(2, patientID);
                 int rowsAffected = createStatement.executeUpdate();
-
                 if (rowsAffected > 0) {
                     showAlert(Alert.AlertType.INFORMATION, "Room Creation Success", "Room created and patient admitted successfully.");
                 } else {
@@ -449,18 +450,19 @@ public class PatientRegular1 {
 
 
 
+
     @FXML
     void onDischargeButtonClicked() {
         clearFields();
         dischargeButton.setDisable(true);
         addMedication.setDisable(true);
+        admitButton.setDisable(true);
         waitingRoomButton.setDisable(true);
         updateRoomPatientId(roomNumber);
 
         idField.setEditable(true);
         nameField.setEditable(true);
         diagnosisField.setEditable(false);
-        admitButton.setDisable(true);
         ageField.setEditable(false);
         genderField.setEditable(false);
         allergiesField.setEditable(false);

@@ -139,9 +139,8 @@
                                 <VBox spacing="10">
                                     <TableView fx:id="patientView">
                                         <columns>
-                                            <TableColumn fx:id="idColumn" prefWidth="60.0" text="ID" />
-                                            <TableColumn fx:id="nameColumn" prefWidth="112.0" text="Name" />
-                                            <TableColumn fx:id="triageColumn" prefWidth="75.0" text="Triage" />
+                                            <TableColumn fx:id="roomColumn" prefWidth="137.0" text="Room Number" />
+                                            <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
                                         </columns>
                                         <!-- Add patient data to the table -->
                                     </TableView>

@@ -19,9 +19,9 @@
 <?import javafx.scene.text.Text?>
 
 <?import javafx.scene.control.DatePicker?>
-<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalerhis.AdminPanel">
-
-    <children>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalerhis.AdminPanel">
+<top>
         <MenuBar>
             <menus>
                 <Menu mnemonicParsing="false" text="File">
@@ -61,6 +61,8 @@
                 </Menu>
             </menus>
         </MenuBar>
+</top>
+    <center>
         <SplitPane dividerPositions="0.29797979797979796" prefHeight="600.0" prefWidth="800.0">
             <items>
                 <AnchorPane prefHeight="400.0" prefWidth="209.0" style="-fx-background-color: #154360;">
@@ -144,5 +146,5 @@
                 </AnchorPane>
             </items>
         </SplitPane>
-    </children>
-</AnchorPane>
+    </center>
+</BorderPane>
